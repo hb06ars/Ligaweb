@@ -7,15 +7,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="generator" content="">
-    <title>SISTEMA ESCOLAR</title>
+    <title>LIGA WEB</title>
 
     <!-- manifest meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" href="img/favicon180.png" sizes="180x180">
-    <link rel="icon" href="img/favicon32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="img/favicon16.png" sizes="16x16" type="image/png">
+    <link rel="apple-touch-icon" href="img/logoicon.png" sizes="180x180">
+    <link rel="icon" href="img/logoicon.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="img/logoicon.png" sizes="16x16" type="image/png">
 
     <!-- Material icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -37,10 +37,10 @@
             <div class="align-self-center col">
                 <div class="logo-loading">
                     <div class="icon icon-100 mb-4 rounded-circle">
-                        <img src="img/favicon144.png" alt="" class="w-100">
+                        <img src="img/logoicon.png" alt="" class="w-100">
                     </div>
-                    <h4 class="text-default">Sistema Escolar</h4>
-                    <p class="text-secondary">Controle de Horários</p>
+                    <h4 class="text-default">LIGA WEB</h4>
+                    <p class="text-secondary">Gerenciador de Campeonatos</p>
                     <div class="loader-ellipsis">
                         <div></div>
                         <div></div>

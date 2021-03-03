@@ -8,39 +8,29 @@
                 </a>
             </div>
             <div class="col-auto">
-                <a href="/horarios" <c:if test="${itemMenuSelecionado == 'pages/horarios'}">class="active" </c:if> >
-                    <i class="material-icons">today</i>
-                    <p>Horário Atual</p>
+                <a href="/classificacao" <c:if test="${itemMenuSelecionado == 'pages/classificacao'}">class="active" </c:if> >
+                    <i class="material-icons">emoji_events</i>
+                    <p>Classificação</p>
                 </a>
             </div>
             <div class="col-auto">
-                <a href="/recados" <c:if test="${itemMenuSelecionado == 'pages/recados'}">class="active" </c:if> >
-                    <i class="material-icons">sms</i>
-                    <p>Recados</p>
+                <a href="/adversario" <c:if test="${itemMenuSelecionado == 'pages/adversario'}">class="active" </c:if> >
+                    <i class="material-icons">account_circle</i>
+                    <p>Adversário</p>
                 </a>
             </div>
             <div class="col-auto">
-                <a href="/alunos" <c:if test="${itemMenuSelecionado == 'pages/alunos'}">class="active" </c:if> >
-                    <i class="material-icons">people</i>
-                    <p>Alunos</p>
+                <a href="/meusJogos" <c:if test="${itemMenuSelecionado == 'pages/meusJogos'}">class="active" </c:if> >
+                    <i class="material-icons">sports_soccer</i>
+                    <p>Meus Jogos</p>
                 </a>
             </div>
-            <c:if test="${usuarioSessao.perfil.admin}">
-            	<div class="col-auto">
-                <a href="/presenca" <c:if test="${itemMenuSelecionado == 'pages/presenca'}">class="active" </c:if> >
-                    <i class="material-icons">timer</i>
-                    <p>Presença</p>
+           	<div class="col-auto">
+                <a href="/resultados" <c:if test="${itemMenuSelecionado == 'pages/resultados'}">class="active" </c:if> >
+                    <i class="material-icons">text_snippet</i>
+                    <p>Resultados</p>
                 </a>
             </div>
-            </c:if>
-            <c:if test="${usuarioSessao.perfil.professor}">
-            	<div class="col-auto">
-                	<a href="/meusHorarios" <c:if test="${itemMenuSelecionado == 'pages/meusHorarios'}">class="active" </c:if> >
-                    	<i class="material-icons">timer</i>
-                    	<p>Meus Horários</p>
-                	</a>
-            	</div>
-            </c:if>
             
         </div>
     </div>

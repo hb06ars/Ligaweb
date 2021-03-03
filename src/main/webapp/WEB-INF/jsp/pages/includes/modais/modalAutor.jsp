@@ -16,15 +16,15 @@ function modalAutor(){
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="TituloModalCentralizado">Autor</h5>
+        <h5 class="modal-title" id="TituloModalCentralizado">Equipe</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        Henrique Brandão <br>
-        Ctto.:(11) 98937-6271<br>
-        Email: hb06ars@hotmail.com
+        Criadores <br>
+        Bando de desocupados que criaram um Campeonato de FIFA.<br>
+        TMJ!
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>

@@ -41,16 +41,16 @@ function expandir(campo, quantidade){
     <meta name="description" content="">
     <meta name="author" content="">
     <meta name="generator" content="">
-    <title>SISTEMA ESCOLAR</title>
+    <title>LIGA WEB</title>
 
     <!-- manifest meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.json" />
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" href="/img/favicon180.png" sizes="180x180">
-    <link rel="icon" href="/img/favicon32.png" sizes="32x32" type="image/png">
-    <link rel="icon" href="/img/favicon16.png" sizes="16x16" type="image/png">
+    <link rel="apple-touch-icon" href="/img/logoicon.png" sizes="180x180">
+    <link rel="icon" href="/img/logoicon.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/img/logoicon.png" sizes="16x16" type="image/png">
     <link rel="shortcut icon" href="/img/logoicon.png" type="image/ico">
     
 
@@ -111,8 +111,8 @@ function expandir(campo, quantidade, pasta){
                     <div class="icon icon-100 mb-4 rounded-circle">
                         <img src="/img/logoicon.png" alt="" class="w-100">
                     </div>
-                    <h4 class="text-default">SISTEMA ESCOLAR</h4>
-                    <p class="text-secondary">Controle de Horários</p>
+                    <h4 class="text-default">LIGA WEB</h4>
+                    <p class="text-secondary">Gerenciador de Campeonatos</p>
                     <div class="loader-ellipsis">
                         <div></div>
                         <div></div>
@@ -138,8 +138,8 @@ function expandir(campo, quantidade, pasta){
                 </div>
             </div>
             <div class="col pl-3 text-left align-self-center">
-                <h6 class="mb-1">SISTEMA ESCOLAR</h6>
-                <p class="small">Controle de Horários</p>
+                <h6 class="mb-1">LIGA WEB</h6>
+                <p class="small">Campeonatos</p>
             </div>
         </div>
         
@@ -159,85 +159,36 @@ function expandir(campo, quantidade, pasta){
                 <li class="nav-item">
                     <a href="#menuVendas" data-toggle="collapse" class="nav-link">
 						<div>
-                            <span class="material-icons icon">supervisor_account</span>
-                           <i class="fas fa-clipboard"></i>&nbsp Horário
+                            <span class="material-icons icon">emoji_events</span>
+                           <i class="fas fa-clipboard"></i>&nbsp Liga
                         </div>
                         <span class="arrow material-icons">chevron_right</span>
 					</a>
                     
                     <ul class="collapse" id="menuVendas">
                         <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/horarios"><span class="material-icons icon text-default-secondary">task_alt</span> Horário Atual </a>
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="classificacao"><span class="material-icons icon text-default-secondary">fact_check</span> Classificação </a>
+                        </li>
+                        <li class="list-unstyled components mb-3" >
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/adversario"><span class="material-icons icon text-default-secondary">account_circle</span> Adversário </a>
+                        </li>
+                        <li class="list-unstyled components mb-3" >
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/meusJogos"><span class="material-icons icon text-default-secondary">sports_soccer</span> Meus Jogos </a>
                         </li>
                         <li class="list-unstyled components mb-3">
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/presenca"><span class="material-icons icon text-default-secondary">today</span> Presença </a>
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/resultados"><span class="material-icons icon text-default-secondary">text_snippet</span> Resultados </a>
                         </li>
-                        <c:if test="${usuarioSessao.perfil.professor}">
-	                        <li class="list-unstyled components mb-3">
-	                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/meusHorarios"><span class="material-icons icon text-default-secondary">alarm</span> Meus Horarios </a>
-	                        </li>
-                        </c:if>
+                        
                     </ul>
                 </li>
                  
                 
-                <li class="nav-item">
-                    <a href="#menuMonitoramento" data-toggle="collapse" class="nav-link">
-						<div>
-                            <span class="material-icons icon">build</span>
-                           	&nbsp Registro
-                        </div>
-                        <span class="arrow material-icons">chevron_right</span>
-					</a>
-                    
-                    <ul class="collapse" id="menuMonitoramento">
-                        <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/funcionarios"><span class="material-icons icon text-default-secondary">engineering</span> Funcionários </a>
-                        </li>
-                        <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/alunos"><span class="material-icons icon text-default-secondary">people</span> Alunos </a>
-                        </li>
-                        <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/recados"><span class="material-icons icon text-default-secondary">notifications</span> Recados </a>
-                        </li>
-                        <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/periodos"><span class="material-icons icon text-default-secondary">timer</span> Períodos </a>
-                        </li>
-                        <li class="list-unstyled components mb-3" >
-                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/cadHorarios"><span class="material-icons icon text-default-secondary">edit</span> Cadastrar Horário </a>
-                        </li>
-                    </ul>
-                </li>
                 
-               	<li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" onclick="modalContato()">
-                        <div>
-                            <span class="material-icons icon">location_on</span>
-                            Nossa Escola
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" onclick="modalAutor()">
-                        <div>
-                            <span class="material-icons icon">build_circle</span>
-                            Suporte
-                        </div>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="https://www.facebook.com">
                         <div>
                             <span class="material-icons icon">facebook</span>
-                            Facebook
-                        </div>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.instagram.com">
-                        <div>
-                            <span class="material-icons icon">camera_alt</span>
-                            Instagram
+                            Face da Liga
                         </div>
                     </a>
                 </li>
@@ -245,27 +196,18 @@ function expandir(campo, quantidade, pasta){
                     <a class="nav-link" href="https://wa.me/5511989376271">
                         <div>
                             <span class="material-icons icon">phone_in_talk</span>
-                            WhatsApp
-                        </div>
-                    </a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link" href="/pdf/manual.pdf">
-                        <div>
-                            <span class="material-icons icon">menu_book</span>
-                            Documentação
+                            Admnistrador
                         </div>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/excel/exemplo_de_planilhas.rar">
+                    <a class="nav-link" style="cursor: pointer;" onclick="modalAutor()">
                         <div>
-                            <span class="material-icons icon">insert_drive_file</span>
-                            Planilhas de Exemplo
+                            <span class="material-icons icon">build_circle</span>
+                            História
                         </div>
                     </a>
                 </li>
-               	
                 
                
                
@@ -290,7 +232,7 @@ function expandir(campo, quantidade, pasta){
                 </div>
                 <div class="text-left col align-self-center">
                     <a class="navbar-brand" href="#">
-                        <h5 class="mb-0">Sistema Escolar</h5>
+                        <h5 class="mb-0">Liga Web</h5>
                     </a>
                 </div>
                 <div class="ml-auto col-auto pl-0">

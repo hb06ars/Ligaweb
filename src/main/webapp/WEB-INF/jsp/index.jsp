@@ -4,6 +4,7 @@
 
 
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -35,6 +36,7 @@
 
 <body class="body-scroll d-flex flex-column h-100 menu-overlay">
     <!-- screen loader -->
+    
     <div class="container-fluid h-100 loader-display">
         <div class="row h-100">
             <div class="align-self-center col">
@@ -70,11 +72,11 @@
 	                        <div class="col-11 col-sm-7 col-md-6 col-lg-5 col-xl-4">
 	                            <h2 class="font-weight-normal mb-5">Liga Web<br>Campeonatos</h2>
 	                            <div class="form-group float-label">
-	                                <input type="text" name="usuarioVal" id="usuarioVal" class="form-control text-white">
+	                                <input type="text" name="usuarioVal" id="usuarioVal" class="form-control text-white" required>
 	                                <label class="form-control-label text-white">Nome de usuário</label>
 	                            </div>
 	                            <div class="form-group float-label position-relative">
-	                                <input type="password" name="senhaVal" class="form-control text-white ">
+	                                <input type="password" name="senhaVal" class="form-control text-white" required>
 	                                <label class="form-control-label text-white">Senha</label>
 	                            </div>  
 	                        </div>
@@ -90,6 +92,12 @@
         <div class="row justify-content-center">
             <div class="col">
                 <input type="submit" class="btn btn-default rounded btn-block" value="Login" />
+            </div>
+        </div>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col">
+                <input type="button" class="btn btn-secondary rounded btn-block" value="Criar" />
             </div>
         </div>
     </div>
