@@ -62,21 +62,13 @@
     <main class="flex-shrink-0 main has-footer">
         <!-- Fixed navbar -->       
         	<header class="header">
-            <div class="row">
-                <div class="ml-auto col-auto align-self-center">
-                    <a href="/pdf/manual.pdf" class="text-white">
-                        Documentação
-                    </a>
-                </div>
-            </div>
-        </header> 
-
+	        </header> 
 	        <div class="container h-100 text-white">
 	            <div class="row h-100">
 	                <div class="col-12 align-self-center mb-4">
 	                    <div class="row justify-content-center">
 	                        <div class="col-11 col-sm-7 col-md-6 col-lg-5 col-xl-4">
-	                            <h2 class="font-weight-normal mb-5">LIGA WEB<br>Campeonatos</h2>
+	                            <h2 class="font-weight-normal mb-5">Liga Web<br>Campeonatos</h2>
 	                            <div class="form-group float-label">
 	                                <input type="text" name="usuarioVal" id="usuarioVal" class="form-control text-white">
 	                                <label class="form-control-label text-white">Nome de usuário</label>
