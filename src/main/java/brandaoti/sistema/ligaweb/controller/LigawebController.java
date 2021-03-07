@@ -12,20 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import brandaoti.sistema.ligaweb.dao.AlunosDao;
-import brandaoti.sistema.ligaweb.dao.HorarioDao;
 import brandaoti.sistema.ligaweb.dao.PerfilDao;
-import brandaoti.sistema.ligaweb.dao.PeriodoDao;
 import brandaoti.sistema.ligaweb.dao.UsuarioDao;
-import brandaoti.sistema.ligaweb.model.Alunos;
-import brandaoti.sistema.ligaweb.model.Horarios;
 import brandaoti.sistema.ligaweb.model.Perfil;
-import brandaoti.sistema.ligaweb.model.Periodos;
 import brandaoti.sistema.ligaweb.model.Usuario;
 
 
@@ -35,13 +30,7 @@ public class LigawebController {
 	@Autowired
 	private UsuarioDao usuarioDao;
 	@Autowired
-	private AlunosDao alunosDao;
-	@Autowired
 	private PerfilDao perfilDao;
-	@Autowired
-	private PeriodoDao periodoDao;
-	@Autowired
-	private HorarioDao horarioDao;
 	
 	public static Usuario usuarioSessao;
 	public static String atualizarPagina = null;
@@ -81,50 +70,6 @@ public class LigawebController {
 		return modelAndView;
 	}
 	
-	
-	public void buscarPeriodoAtual() {
-		LocalDateTime agora = LocalDateTime.now();
-		DateTimeFormatter formatterHora = DateTimeFormatter.ofPattern("HH:mm");
-		String horaFormatada = formatterHora.format(agora);
-		Integer horaAtual = Integer.parseInt(horaFormatada.substring(0, 2));
-		Integer minutoAtual = Integer.parseInt(horaFormatada.substring(3, 5));
-		List<Periodos> periodos = periodoDao.ordenado();
-		Integer inicioHoraPeriodo = 0;
-		Integer inicioMinutoPeriodo = 0;
-		Integer fimHoraPeriodo = 0;
-		Integer fimMinutoPeriodo = 0;
-		Integer repeticoes = 0;
-		Boolean encontrado = false;
-		while(repeticoes < 24) {
-			for(Periodos p : periodos) {
-				inicioHoraPeriodo = Integer.parseInt(p.getInicio().substring(0, 2));
-				inicioMinutoPeriodo = Integer.parseInt(p.getInicio().substring(3,5));
-				fimHoraPeriodo = Integer.parseInt(p.getFim().substring(0, 2));
-				fimMinutoPeriodo = Integer.parseInt(p.getFim().substring(3,5));
-				if(horaAtual >= inicioHoraPeriodo && horaAtual <= fimHoraPeriodo) {
-					if(horaAtual == fimHoraPeriodo ) {
-						if(minutoAtual <= fimMinutoPeriodo) {
-							periodoAtual = p.getNome();
-							encontrado = true;
-						}
-					} else {
-						periodoAtual = p.getNome();
-						encontrado = true;
-					}
-				}
-			}
-			if(!encontrado) {
-				horaAtual++;
-				minutoAtual++;
-				if(minutoAtual >=60 ) minutoAtual = 0;
-				if(horaAtual >=24 ) horaAtual = 0;
-			} else {
-				repeticoes = 24;
-			}
-			repeticoes++;
-		}
-		System.out.println("OK: " + periodoAtual);
-	}
 	
 	
 	public String diaDaSemana() {
@@ -171,10 +116,9 @@ public class LigawebController {
 	
 	@GetMapping({"/","/index"}) 
 		public ModelAndView index(Model model) { 
-		ModelAndView modelAndView = new ModelAndView("index"); 
-		Usuario usu = usuarioDao.fazerLogin("adm", "adm");
+		ModelAndView modelAndView = new ModelAndView("index");
+		List<Usuario> usuarios = usuarioDao.findAll();
 		List<Perfil> perfis = perfilDao.findAll();
-		List<Periodos> periodos = periodoDao.findAll();
 		hoje();
 		if(perfis.size() == 0) {
 			Perfil p = new Perfil();
@@ -186,73 +130,23 @@ public class LigawebController {
 			
 			p = new Perfil();
 			p.setAtivo(true);
-			p.setNome("Funcionário");
+			p.setNome("Jogador");
 			p.setCodigo("2");
-			p.setFuncionario(true);
+			p.setJogador(true);
 			perfilDao.save(p);
-			
-			p = new Perfil();
-			p.setAtivo(true);
-			p.setNome("Professor");
-			p.setCodigo("3");
-			p.setProfessor(true);
-			perfilDao.save(p);
-			
-			p = new Perfil();
-			p.setAtivo(true);
-			p.setNome("Aluno");
-			p.setCodigo("4");
-			p.setAluno(true);
-			perfilDao.save(p);
+
 		}
-		if(usu == null) {
+		if(usuarios.size() == 0) {
 			Usuario u = new Usuario();
 			u.setAtivo(true);
-			u.setCargo("Admnistrador");
-			u.setTelefone("(11)88888-8888");
-			u.setEmail("teste@hotmail.com");
+			u.setPrimeiroAcesso(true);
+			u.setTelefone("(11)98937-6271");
 			u.setPerfil(perfilDao.buscarAdm().get(0));
-			u.setLogin("adm");
-			u.setNome("Admnistrador");
-			u.setSenha("adm");
+			u.setLogin("hb06ars");
+			u.setNome("Henrique Brandão");
+			u.setSenha("kzdut");
+			u.setAcesso("");
 			usuarioDao.save(u);
-		}
-		if(periodos.size() == 0) {
-			Periodos p = new Periodos();
-			p.setCodigo("1");
-			p.setNome("Manhã");
-			p.setInicio("08:00");
-			p.setFim("12:20");
-			periodoDao.saveAndFlush(p);
-			
-			p = new Periodos();
-			p.setCodigo("2");
-			p.setNome("Tarde");
-			p.setInicio("13:00");
-			p.setFim("18:20");
-			periodoDao.saveAndFlush(p);
-			
-			p = new Periodos();
-			p.setCodigo("3");
-			p.setNome("Noite");
-			p.setInicio("19:00");
-			p.setFim("22:45");
-			periodoDao.saveAndFlush(p);
-		}
-		buscarPeriodoAtual();
-		
-		
-		List<Usuario> usuarios = usuarioDao.zeraComparecimento(hoje);
-		for(Usuario u : usuarios) {
-			u.setUltimoComparecimento(null);
-			u.setCompareceu(false);
-			usuarioDao.saveAndFlush(u);
-		}
-		List<Horarios> horarios = horarioDao.zeraComparecimento(hoje);
-		for(Horarios h : horarios) {
-			h.setSubstituto(null);
-			h.setUltimaAtualizacao(null);
-			horarioDao.saveAndFlush(h);
 		}
 		
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
@@ -263,6 +157,81 @@ public class LigawebController {
 	public ModelAndView deslogar(Model model) {  
 		String link = "/deslogar";
 		usuarioSessao = null;
+		ModelAndView modelAndView = new ModelAndView(link); 
+		return modelAndView; 
+	}
+	
+	
+	@RequestMapping(value = "/adm/deletando/{tabela}/{id}", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE}) // Pagina de Alteração de Perfil
+	public ModelAndView deletando(Model model,@PathVariable("tabela") String tabela, @PathVariable("id") Integer id) { //Função e alguns valores que recebe...
+		String link = verificaLink("/deslogar");
+		if(usuarioSessao.getPerfil().getAdmin()) {
+			model.addAttribute("usuarioSessao", usuarioSessao);
+			link = "/pages/"+tabela;
+			if(tabela.equals("token")) {
+				atualizarPagina = "/token";
+				Usuario objeto = usuarioDao.findById(id).get();
+				if(objeto != null)
+					usuarioDao.deleteById(id);
+				usuarioDao.flush();
+				List<Usuario> tokens = usuarioDao.buscaTokens();
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("tokens", tokens);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Token", "Deletado com sucesso.", "erro");
+			}
+		}
+		ModelAndView modelAndView = new ModelAndView(link);
+		enviaMsg(modelAndView);
+		return modelAndView; 
+	}
+
+	
+	
+	@RequestMapping(value = "/criar", method = {RequestMethod.POST,RequestMethod.GET})
+	public ModelAndView criar(Model model, Usuario usuario, String codigoAcesso, String confirmaSenha) {  
+		String link = "/criar";
+		String erro="";
+		String msg="";
+		if(codigoAcesso != null && confirmaSenha != null) {
+			if(!codigoAcesso.equals("") && !confirmaSenha.equals("")) {
+				if(confirmaSenha.equals(usuario.getSenha())) {
+					if(usuario.getLogin() != null) {
+						if(!usuario.getLogin().replace(" ", "").equals("") && !usuario.getLogin().replace(" ", "").equals(" ")) {
+							List<Usuario> u = usuarioDao.buscaLogin(usuario.getLogin());
+							if(u.size() == 0) {
+								Usuario user = usuarioDao.buscaAcesso(codigoAcesso);
+								if(user != null) {
+									user.setAcesso("");
+									user.setAtivo(true);
+									user.setLogin(usuario.getLogin().replace(" ", ""));
+									user.setNome(usuario.getNome());
+									user.setPerfil(perfilDao.buscarJogador().get(0));
+									user.setPrimeiroAcesso(true);
+									user.setSenha(usuario.getSenha());
+									user.setTelefone(usuario.getTelefone());
+									usuarioDao.save(user);
+									msg = "Usuário "+usuario.getLogin()+" cadastrado com sucesso!";
+								} else {
+									erro = "Código de acesso inválido!";
+									model.addAttribute("erro", erro);
+								}
+								model.addAttribute("msg", msg);
+							} else {
+								erro = "Login já existe.";
+								model.addAttribute("erro", erro);
+							}
+						} else {
+							erro = "Login inválido.";
+							model.addAttribute("erro", erro);
+						}
+					}
+				} else {
+					erro = "Senha não confere com a confirmação";
+					model.addAttribute("erro", erro);
+				}
+			}
+		}	
 		ModelAndView modelAndView = new ModelAndView(link); 
 		return modelAndView; 
 	}
@@ -283,6 +252,56 @@ public class LigawebController {
 	}
 	
 	
+	@RequestMapping(value = "/senha", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView senha(Model model, String confirmaSenha, String senhaAtual, String novaSenha, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			if(confirmaSenha != null) {
+				if(!confirmaSenha.equals("")) {
+					if(confirmaSenha.equals(novaSenha)) {
+						if(usuarioSessao.getSenha().equals(senhaAtual)) {
+							Usuario u = usuarioDao.findById(usuarioSessao.getId()).get();
+							u.setSenha(novaSenha);
+							usuarioDao.save(u);
+							registraMsg("Senha", "Senha alterada com sucesso!.", "info");
+						} else {
+							registraMsg("Senha", "Senha inválida.", "erro");
+						}
+					} else {
+						registraMsg("Senha", "Confirmação de senha não confere.", "erro");
+					}
+				}
+			}
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/senha");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		enviaMsg(modelAndView);
+		return modelAndView; 
+	}
 	
+	
+	@RequestMapping(value = "/token", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView token(Model model, Integer criarToken, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			if(criarToken != null) {
+				if(criarToken == 1) {
+					Usuario u = new Usuario();
+					u.setAtivo(false);
+					u.setAcesso(usuario.getAcesso());
+					u.setNome(usuario.getNome());
+					u.setLogin(usuario.getLogin());
+					usuarioDao.save(u);
+				}
+			}
+			List<Usuario> tokens = usuarioDao.buscaTokens();
+			model.addAttribute("tokens", tokens);
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/token");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		return modelAndView; 
+	}
 
 }

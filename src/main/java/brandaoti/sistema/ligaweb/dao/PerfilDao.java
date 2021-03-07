@@ -10,21 +10,18 @@ import brandaoti.sistema.ligaweb.model.Perfil;
 
 public interface PerfilDao extends JpaRepository<Perfil, Integer> {
 	
-	@Query(" select p from Perfil p where admin = 1 ")
+	@Query(" select p from Perfil p where p.admin = 1 ")
 	List<Perfil> buscarAdm();
 	
-	@Query(" select p from Perfil p where aluno = 1 ")
-	List<Perfil> buscarAluno();
+	@Query(value=" select p from Perfil p where p.jogador = 1")
+	List<Perfil> buscarJogador();
 	
-	@Query(" select p from Perfil p where funcionario = 1 ")
-	List<Perfil> buscarFuncionario();
+	@Query(" select p from Perfil p")
+	List<Perfil> buscarPerfis();
 	
-	@Query(" select p from Perfil p where professor = 1 ")
-	List<Perfil> buscarProfessor();
-	
-	@Query(" select p from Perfil p where upper( p.codigo ) like upper( :codigo ) and ativo = 1 ")
+	@Query(" select p from Perfil p where upper( p.codigo ) like upper( :codigo ) and p.ativo = 1 ")
 	Perfil buscarCodigo(@Param("codigo") String codigo);
 	
-	@Query(" select p from Perfil p where upper( p.nome ) like upper( :nome ) and ativo = 1 ")
+	@Query(" select p from Perfil p where upper( p.nome ) like upper( :nome ) and p.ativo = 1 ")
 	List<Perfil> buscarNome(@Param("nome") String nome);
 }

@@ -201,6 +201,22 @@ function expandir(campo, quantidade, pasta){
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" style="cursor: pointer;" href="/token">
+                        <div>
+                            <span class="material-icons icon">vpn_key</span>
+                            Token
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="cursor: pointer;" href="/senha">
+                        <div>
+                            <span class="material-icons icon">password</span>
+                            Trocar Senha
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" style="cursor: pointer;" onclick="modalAutor()">
                         <div>
                             <span class="material-icons icon">build_circle</span>

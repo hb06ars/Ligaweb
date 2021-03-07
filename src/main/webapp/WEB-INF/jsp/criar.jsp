@@ -1,6 +1,26 @@
 <!doctype html>
 <html lang="en" class="h-100">
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<jsp:include page="pages/includes/modais/modalTermos.jsp" />
+<jsp:include page="pages/includes/mascaras/mascaras.jsp" />
+
+
+<script>
+function ativarSalvar(){
+	var btSalvar = document.getElementById("btSalvar").style.display;
+	if(btSalvar == 'none'){
+		document.getElementById("btSalvar").style.display = 'block';
+	} else{
+		document.getElementById("btSalvar").style.display = 'none';
+	}
+}
+
+
+</script>
+
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -53,8 +73,7 @@
     </div>
 
 
-
-
+<form action="/criar" id="criarUsuario" method="post" autocomplete="off">
     <!-- Begin page content -->
     <main class="flex-shrink-0 main has-footer">
         <!-- Fixed navbar -->
@@ -68,37 +87,56 @@
                 <div class="text-left col align-self-center">
 
                 </div>
-                <div class="ml-auto col-auto align-self-center">
-                    <a href="signup.html" class="text-white">
-                        Sign In
-                    </a>
-                </div>
             </div>
         </header>
-
 
         <div class="container h-100 text-white">
             <div class="row h-100">
                 <div class="col-12 align-self-center mb-4">
                     <div class="row justify-content-center">
                         <div class="col-11 col-sm-7 col-md-6 col-lg-5 col-xl-4">
-                            <h2 class="font-weight-normal mb-5">Create new<br>account with us</h2>
+                            <h2 class="font-weight-normal mb-5">Criar novo usuário</h2>
                             <div class="form-group float-label active">
-                                <input type="text" class="form-control text-white" value="MaxartBond">
-                                <label class="form-control-label text-white">Username/Email</label>
+                                <input type="text" name="login" class="form-control text-white" value="" autocomplete="nope" required>
+                                <label class="form-control-label text-white">Login da PSN</label>
+                            </div>
+                            <div class="form-group float-label active">
+                                <input type="text" name="nome" class="form-control text-white" value="" autocomplete="nope" required>
+                                <label class="form-control-label text-white">Nome</label>
+                            </div>
+                            <div class="form-group float-label active">
+                                <input type="text" name="telefone" id="telefone" class="form-control text-white" onkeypress="mascaraTel(this)" onkeyup="somenteNumeros(this);" placeholder="(00)00000-0000" autocomplete="off" maxlength="14" minlength="14" >
+                                <label class="form-control-label text-white">Contato para o oponente mandar mensagem.</label>
                             </div>
                             <div class="form-group float-label position-relative">
-                                <input type="password" class="form-control text-white ">
-                                <label class="form-control-label text-white">Password</label>
+                                <input type="password" name="senha" class="form-control text-white " required>
+                                <label class="form-control-label text-white">Senha</label>
                             </div>
                             <div class="form-group float-label position-relative">
-                                <input type="password" class="form-control text-white ">
-                                <label class="form-control-label text-white">Confirm Password</label>
+                                <input type="password" name="confirmaSenha" class="form-control text-white " required>
+                                <label class="form-control-label text-white">Confirme a Senha</label>
                             </div>
+                            <div class="form-group float-label position-relative">
+                                <input type="text" name="codigoAcesso" class="form-control text-white " required>
+                                <label class="form-control-label text-white">Código de Acesso</label>
+                            </div>
+                            <c:if test="${erro != null}">
+	                            <div class="form-group float-label position-relative">
+	                             	<a style="color:red" id="erro">${erro }</a>
+	                             </div>
+                            </c:if>
+                            <c:if test="${msg != null}">
+	                            <div class="form-group float-label position-relative">
+	                             	<a id="erro">${msg }</a>
+	                             </div>
+                            </c:if>
+                             <div class="form-group float-label position-relative" >
+                             	<a style="cursor:pointer" onclick="modalTermos()">Ler os termos e condições</a>
+                             </div>
                             <div class="form-group float-label position-relative">
                                 <div class="custom-control custom-switch">
                                     <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                    <label class="custom-control-label" for="customSwitch1">Agree to terms and condition</label>
+                                    <label class="custom-control-label" for="customSwitch1" onclick="ativarSalvar()" >Aceito os termos e condições</label>
                                 </div>
                             </div>
                         </div>
@@ -109,14 +147,17 @@
         </div>
     </main>
 
+
     <!-- footer-->
     <div class="footer no-bg-shadow py-3">
-        <div class="row justify-content-center">
+    	<div class="row justify-content-center" id="btSalvar" style="display:none">
             <div class="col">
-                <a href="index.html" class="btn btn-default rounded btn-block">Sign up</a>
+                <input type="submit" onclick="validar()" class="btn btn-default rounded btn-block" value="Salvar" />
             </div>
         </div>
     </div>
+    
+</form>
 
 
     <!-- Required jquery and libraries -->

@@ -2,7 +2,6 @@
 <html lang="en" class="h-100">
 
 
-
 <head>
 
     <meta charset="utf-8">
@@ -34,7 +33,7 @@
     <link href="/css/style.css" rel="stylesheet" id="style">
 </head>
 
-<body class="body-scroll d-flex flex-column h-100 menu-overlay">
+<body class="body-scroll d-flex flex-column h-100 menu-overlay" >
     <!-- screen loader -->
     
     <div class="container-fluid h-100 loader-display">
@@ -62,9 +61,7 @@
     <!-- Begin page content -->
     <main class="flex-shrink-0 main has-footer">
         <!-- Fixed navbar -->       
-        	<header class="header">
-	        </header> 
-	        <div class="container h-100 text-white">
+        	<div class="container h-100 text-white">
 	            <div class="row h-100">
 	                <div class="col-12 align-self-center mb-4">
 	                    <div class="row justify-content-center">
