@@ -2,6 +2,7 @@
 ==================================
 Table of content 
 ==================================
+DIGITE HENRIQUE E VEJA MINHAS ALTERAÇÕES IMPORTANTES
 
 1. Bootstrap default css
 2. Color settings
@@ -9827,7 +9828,7 @@ a.text-dark:hover, a.text-dark:focus {
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
-  background-color: #3629b7;
+  background-color: #08052E;
   vertical-align: middle;
 }
 
@@ -9964,7 +9965,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 /* 3. Body Global  */
 body {
-  background-color: #3629b7;
+  background-color: #08052E;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -10115,21 +10116,21 @@ p:last-child {
 
 /* 4. color */
 .bg-default {
-  background-color: #3629b7;
+  background-color: #08052E;
   color: #ffffff;
 }
 
 .text-default {
-  color: #3629b7;
+  color: #08052E;
 }
 
 .bg-default-secondary {
-  background-color: #00b4ff !important;
+  background-color: #5185D8 !important;
   color: #ffffff;
 }
 
 .text-default-secondary {
-  color: #00b4ff;
+  color: #5185D8;
 }
 
 .bg-white-light {
@@ -10275,7 +10276,7 @@ p:last-child {
   top: 0;
   width: 100%;
   z-index: 99;
-  background: rgba(54, 41, 183, 0.95);
+  /*background: rgba(54, 41, 183, 0.95);*/ /*HENRIQUE -- Cor do Header*/
   border-radius: 0;
 }
 
@@ -10289,9 +10290,11 @@ p:last-child {
   margin-right: 0;
 }
 
+/* HENRIQUE
 .header.active {
-  background: rgba(54, 41, 183, 0.95);
+  background: rgba(54, 41, 183, 0.95); HENRIQUE HEADER
 }
+*/
 
 .counter {
   height: 6px;
@@ -10308,7 +10311,7 @@ p:last-child {
 
 /* 7. header */
 .main {
-  background-color: #3629b7;
+  background-color: #08052E;
   padding: 75px 10px 10px 10px;
   min-height: 100%;
   min-height: 100vh;
@@ -10372,13 +10375,13 @@ p:last-child {
 }
 
 .footer a:not(.btn).active {
-  color: #00b4ff;
-  border-color: #3629b7;
+  color: #5185D8;
+  border-color: #08052E;
 }
 
 .footer a:not(.btn).active i,
 .footer a:not(.btn).active span {
-  color: #3629b7;
+  color: #08052E;
 }
 
 .footer.no-bg-shadow {
@@ -10523,7 +10526,7 @@ p:last-child {
 }
 
 .btn-default {
-  background-color: #00b4ff;
+  background-color: #5185D8;
   color: #ffffff;
 }
 
@@ -10538,16 +10541,16 @@ p:last-child {
 }
 
 .btn-outline-default {
-  border: 1px solid #00b4ff;
-  color: #00b4ff;
+  border: 1px solid #5185D8;
+  color: #5185D8;
 }
 
 .btn-outline-default:hover, .btn-outline-default:focus {
-  color: #00b4ff;
+  color: #5185D8;
 }
 
 .btn-outline-default:active {
-  background-color: #00b4ff;
+  background-color: #5185D8;
   color: #ffffff;
 }
 
@@ -10802,7 +10805,7 @@ p:last-child {
 /* cart count */
 .cart-count {
   background-color: rgba(54, 41, 183, 0.1);
-  color: #3629b7;
+  color: #08052E;
   border-radius: 5px;
   padding: 2px;
   width: 66px;
@@ -10822,7 +10825,7 @@ p:last-child {
   text-align: center;
   vertical-align: middle;
   background-color: rgba(54, 41, 183, 0.1);
-  color: #3629b7;
+  color: #08052E;
 }
 
 .cart-count .input-group-prepend .btn:focus, .cart-count .input-group-prepend .btn:active,
@@ -11051,7 +11054,7 @@ p:last-child {
 
 /* 14. menu */
 .menu-overlay .main-menu {
-  background: #3629b7;
+  background: #08052E;
   color: #ffffff;
   background-size: cover;
   padding: 20px 15px 30px 15px;
@@ -11120,18 +11123,18 @@ p:last-child {
   top: 12px;
   bottom: 0;
   right: 10px;
-  color: #00b4ff;
+  color: #5185D8;
   stroke: rgba(0, 180, 255, 0.3);
 }
 
 .menu-overlay .main-menu .menu-container .nav-pills .nav-item .nav-link.active {
-  background: #00b4ff;
+  background: #5185D8;
   color: #ffffff;
 }
 
 .menu-overlay .main-menu .menu-container .nav-pills .nav-item .nav-link.active .arrow {
-  color: #00b4ff;
-  stroke: #3629b7;
+  color: #5185D8;
+  stroke: #08052E;
 }
 
 .menu-overlay .main-menu > .btn-close {
@@ -11162,7 +11165,7 @@ p:last-child {
 }
 
 .menu-push-content .main-menu {
-  background: #3629b7;
+  background: #08052E;
   color: #ffffff;
   background-size: cover;
   padding: 20px 0px 50px 0px;
@@ -11223,18 +11226,18 @@ p:last-child {
   top: 12px;
   bottom: 0;
   right: 10px;
-  color: #00b4ff;
+  color: #5185D8;
   stroke: rgba(0, 180, 255, 0.3);
 }
 
 .menu-push-content .main-menu .menu-container .nav-pills .nav-item .nav-link.active {
-  background: #00b4ff;
+  background: #5185D8;
   color: #ffffff;
 }
 
 .menu-push-content .main-menu .menu-container .nav-pills .nav-item .nav-link.active .arrow {
-  color: #00b4ff;
-  stroke: #3629b7;
+  color: #5185D8;
+  stroke: #08052E;
 }
 
 .menu-push-content .main-menu > .close {
@@ -11244,7 +11247,7 @@ p:last-child {
 }
 
 .menu-active {
-  background: #3629b7;
+  background: #08052E;
   background-image: none;
 }
 
@@ -11286,7 +11289,7 @@ p:last-child {
 }
 
 .logo-loading h3 {
-  color: #3629b7;
+  color: #08052E;
   font-size: 30px;
 }
 
@@ -11402,7 +11405,7 @@ p:last-child {
 }
 
 .darkmode .bg-default {
-  background-color: #3629b7;
+  background-color: #08052E;
   color: #ffffff;
 }
 
@@ -11421,7 +11424,7 @@ p:last-child {
 }
 
 .darkmode .bg-default-light {
-  background-color: #3629b7 !important;
+  background-color: #08052E !important;
 }
 
 .darkmode .bg-danger-light {
