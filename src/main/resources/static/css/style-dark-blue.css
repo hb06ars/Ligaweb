@@ -9825,7 +9825,7 @@ a.text-dark:hover, a.text-dark:focus {
   border-radius: 50%;
   text-align: center;
   line-height: 24px;
-  background-color: #4814bf;
+  background-color: #100E61;
   vertical-align: middle;
 }
 
@@ -9961,7 +9961,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 body {
-  background-color: #4814bf;
+  background-color: #100E61;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
   line-height: 20px;
@@ -10111,21 +10111,21 @@ p:last-child {
 }
 
 .bg-default {
-  background-color: #4814bf;
+  background-color: #100E61;
   color: #ffffff;
 }
 
 .text-default {
-  color: #4814bf;
+  color: #100E61;
 }
 
 .bg-default-secondary {
-  background-color: #f72585 !important;
+  background-color: #4F4EDD !important;
   color: #ffffff;
 }
 
 .text-default-secondary {
-  color: #f72585;
+  color: #4F4EDD;
 }
 
 .bg-white-light {
@@ -10269,7 +10269,7 @@ p:last-child {
   top: 0;
   width: 100%;
   z-index: 99;
-  background: rgba(72, 20, 191, 0.95);
+  background: #100e61; /*Henrique*/
   border-radius: 0;
 }
 
@@ -10301,7 +10301,7 @@ p:last-child {
 }
 
 .main {
-  background-color: #4814bf;
+  background-color: #100E61;
   padding: 75px 10px 10px 10px;
   min-height: 100%;
   min-height: 100vh;
@@ -10364,13 +10364,13 @@ p:last-child {
 }
 
 .footer a:not(.btn).active {
-  color: #f72585;
-  border-color: #4814bf;
+  color: #4F4EDD;
+  border-color: #100E61;
 }
 
 .footer a:not(.btn).active i,
 .footer a:not(.btn).active span {
-  color: #4814bf;
+  color: #100E61;
 }
 
 .footer.no-bg-shadow {
@@ -10514,12 +10514,12 @@ p:last-child {
 }
 
 .btn-default {
-  background-color: #f72585;
+  background-color: #4F4EDD;
   color: #ffffff;
 }
 
 .btn-default:hover, .btn-default:focus {
-  background-color: #f60c77;
+  background-color: #4F4EDD;
   color: #ffffff;
 }
 
@@ -10529,16 +10529,16 @@ p:last-child {
 }
 
 .btn-outline-default {
-  border: 1px solid #f72585;
-  color: #f72585;
+  border: 1px solid #4F4EDD;
+  color: #4F4EDD;
 }
 
 .btn-outline-default:hover, .btn-outline-default:focus {
-  color: #f72585;
+  color: #4F4EDD;
 }
 
 .btn-outline-default:active {
-  background-color: #f72585;
+  background-color: #4F4EDD;
   color: #ffffff;
 }
 
@@ -10791,7 +10791,7 @@ p:last-child {
 /* cart count */
 .cart-count {
   background-color: rgba(72, 20, 191, 0.1);
-  color: #4814bf;
+  color: #100E61;
   border-radius: 5px;
   padding: 2px;
   width: 66px;
@@ -10811,7 +10811,7 @@ p:last-child {
   text-align: center;
   vertical-align: middle;
   background-color: rgba(72, 20, 191, 0.1);
-  color: #4814bf;
+  color: #100E61;
 }
 
 .cart-count .input-group-prepend .btn:focus, .cart-count .input-group-prepend .btn:active,
@@ -11037,7 +11037,7 @@ p:last-child {
 }
 
 .menu-overlay .main-menu {
-  background: #4814bf;
+  background: #100E61;
   color: #ffffff;
   background-size: cover;
   padding: 20px 15px 30px 15px;
@@ -11106,18 +11106,18 @@ p:last-child {
   top: 12px;
   bottom: 0;
   right: 10px;
-  color: #f72585;
+  color: #4F4EDD;
   stroke: rgba(247, 37, 133, 0.3);
 }
 
 .menu-overlay .main-menu .menu-container .nav-pills .nav-item .nav-link.active {
-  background: #f72585;
+  background: #4F4EDD;
   color: #ffffff;
 }
 
 .menu-overlay .main-menu .menu-container .nav-pills .nav-item .nav-link.active .arrow {
-  color: #f72585;
-  stroke: #4814bf;
+  color: #4F4EDD;
+  stroke: #100E61;
 }
 
 .menu-overlay .main-menu > .btn-close {
@@ -11148,7 +11148,7 @@ p:last-child {
 }
 
 .menu-push-content .main-menu {
-  background: #4814bf;
+  background: #100E61;
   color: #ffffff;
   background-size: cover;
   padding: 20px 0px 50px 0px;
@@ -11209,18 +11209,18 @@ p:last-child {
   top: 12px;
   bottom: 0;
   right: 10px;
-  color: #f72585;
+  color: #4F4EDD;
   stroke: rgba(247, 37, 133, 0.3);
 }
 
 .menu-push-content .main-menu .menu-container .nav-pills .nav-item .nav-link.active {
-  background: #f72585;
+  background: #4F4EDD;
   color: #ffffff;
 }
 
 .menu-push-content .main-menu .menu-container .nav-pills .nav-item .nav-link.active .arrow {
-  color: #f72585;
-  stroke: #4814bf;
+  color: #4F4EDD;
+  stroke: #100E61;
 }
 
 .menu-push-content .main-menu > .close {
@@ -11230,7 +11230,7 @@ p:last-child {
 }
 
 .menu-active {
-  background: #4814bf;
+  background: #100E61;
   background-image: none;
 }
 
@@ -11271,7 +11271,7 @@ p:last-child {
 }
 
 .logo-loading h3 {
-  color: #4814bf;
+  color: #100E61;
   font-size: 30px;
 }
 
@@ -11385,7 +11385,7 @@ p:last-child {
 }
 
 .darkmode .bg-default {
-  background-color: #4814bf;
+  background-color: #100E61;
   color: #ffffff;
 }
 
@@ -11404,7 +11404,7 @@ p:last-child {
 }
 
 .darkmode .bg-default-light {
-  background-color: #4814bf !important;
+  background-color: #100E61 !important;
 }
 
 .darkmode .bg-danger-light {

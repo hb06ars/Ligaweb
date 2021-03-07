@@ -9,11 +9,11 @@
 
 <script>
 function ativarSalvar(){
-	var btSalvar = document.getElementById("btSalvar").style.display;
-	if(btSalvar == 'none'){
-		document.getElementById("btSalvar").style.display = 'block';
-	} else{
+	var btSalvar = document.getElementById("customSwitch1").checked;
+	if(btSalvar){
 		document.getElementById("btSalvar").style.display = 'none';
+	} else{
+		document.getElementById("btSalvar").style.display = 'block';
 	}
 }
 

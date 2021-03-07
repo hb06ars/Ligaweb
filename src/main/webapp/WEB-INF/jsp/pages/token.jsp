@@ -34,7 +34,7 @@
 
 
 <div class="card" >
-<div class="card-body p-0 border-0" style="overflow: auto; width: 100%">
+<div class="card-body p-2 border-0" style="overflow: auto; width: 100%">
 	<table id="tabela" class="table-responsive table-striped table-sm">
 		<thead>
 		<tr>
