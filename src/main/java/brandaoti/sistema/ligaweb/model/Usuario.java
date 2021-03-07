@@ -25,7 +25,7 @@ public class Usuario {
 	private String senha;
 	
 	@Column
-	private Boolean ativo;
+	private Boolean ativo = false;
 	
 	@Column
 	//Você pode gerar o tamanho que desejar e se for obrigatório.
@@ -33,23 +33,16 @@ public class Usuario {
 	
 	@Column
 	//Você pode gerar o tamanho que desejar e se for obrigatório.
-	private String email;
-	
-	@Column
-	//Você pode gerar o tamanho que desejar e se for obrigatório.
 	private String telefone;
-	
-	@Column
-	private String cargo;
 	
 	@OneToOne
 	private Perfil perfil;
 	
 	@Column
-	private Boolean compareceu = false;
+	private Boolean primeiroAcesso = true;
 	
 	@Column
-	private String ultimoComparecimento = LigawebController.hoje;
+	private String acesso;
 
 	public Integer getId() {
 		return id;
@@ -91,20 +84,12 @@ public class Usuario {
 		this.nome = nome;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getTelefone() {
+		return telefone;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getCargo() {
-		return cargo;
-	}
-
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
 	public Perfil getPerfil() {
@@ -115,32 +100,21 @@ public class Usuario {
 		this.perfil = perfil;
 	}
 
-	public String getTelefone() {
-		return telefone;
+	public Boolean getPrimeiroAcesso() {
+		return primeiroAcesso;
 	}
 
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
+	public void setPrimeiroAcesso(Boolean primeiroAcesso) {
+		this.primeiroAcesso = primeiroAcesso;
 	}
 
-	public Boolean getCompareceu() {
-		return compareceu;
+	public String getAcesso() {
+		return acesso;
 	}
 
-	public void setCompareceu(Boolean compareceu) {
-		this.compareceu = compareceu;
+	public void setAcesso(String acesso) {
+		this.acesso = acesso;
 	}
-
-	public String getUltimoComparecimento() {
-		return ultimoComparecimento;
-	}
-
-	public void setUltimoComparecimento(String ultimoComparecimento) {
-		this.ultimoComparecimento = ultimoComparecimento;
-	}
-
-	
-	
 	
 
 	
