@@ -29,7 +29,7 @@ alterar(){
 	<div class="card mb-4">
 	<div
 		class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-		<h1 class="h4">&nbsp&nbsp Trocar a senha</h1>
+		<h1 class="h4">&nbsp&nbsp Alterar a senha</h1>
 	</div>
 	<div class="card" >
 		<div class="card-body p-4 border-0" style="overflow: auto; width: 100%">
