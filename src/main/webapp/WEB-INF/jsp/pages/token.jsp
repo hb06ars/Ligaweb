@@ -53,7 +53,6 @@
 		</thead>
 		<tbody>
 		<tr>
-		
 		<c:forEach items="${tokens}" var="t">
 			<td><c:if test="${t.ativo}">Sim</c:if> <c:if test="${!t.ativo}">Não</c:if>
 			<td>${t.id}

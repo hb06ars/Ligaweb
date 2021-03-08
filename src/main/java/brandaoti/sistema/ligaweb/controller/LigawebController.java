@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import brandaoti.sistema.ligaweb.dao.PerfilDao;
+import brandaoti.sistema.ligaweb.dao.ResultadoDao;
 import brandaoti.sistema.ligaweb.dao.UsuarioDao;
 import brandaoti.sistema.ligaweb.model.Perfil;
+import brandaoti.sistema.ligaweb.model.Resultado;
 import brandaoti.sistema.ligaweb.model.Usuario;
 
 
@@ -31,6 +33,8 @@ public class LigawebController {
 	private UsuarioDao usuarioDao;
 	@Autowired
 	private PerfilDao perfilDao;
+	@Autowired
+	private ResultadoDao resultadoDao;
 	
 	public static Usuario usuarioSessao;
 	public static String atualizarPagina = null;
@@ -180,6 +184,30 @@ public class LigawebController {
 				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Token", "Deletado com sucesso.", "erro");
 			}
+			if(tabela.equals("meusJogos")) {
+				atualizarPagina = "/meusJogos";
+				Resultado objeto = resultadoDao.findById(id).get();
+				if(objeto != null)
+					resultadoDao.deleteById(id);
+				resultadoDao.flush();
+				List<Resultado> resultados = resultadoDao.todosResultados();
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("meusJogos", resultados);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Meus Jogos", "Jogo cancelado com sucesso.", "erro");
+			}
+			if(tabela.equals("resultados")) {
+				atualizarPagina = "/resultados";
+				Resultado objeto = resultadoDao.findById(id).get();
+				if(objeto != null)
+					resultadoDao.deleteById(id);
+				resultadoDao.flush();
+				List<Resultado> resultados = resultadoDao.todosResultados();
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("resultados", resultados);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Resultados", "Jogo deletado com sucesso.", "erro");
+			}
 		}
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -299,6 +327,43 @@ public class LigawebController {
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = verificaLink("pages/token");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		return modelAndView; 
+	}
+	
+	
+	@RequestMapping(value = "/resultados", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView resultados(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			List<Resultado> resultados = resultadoDao.todosResultados();
+			model.addAttribute("resultados", resultados);
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/resultados");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		return modelAndView; 
+	}
+	
+	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView meusJogos(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		
+		/* Excluir */
+		Resultado r = new Resultado();
+		r.setJogador1(usuarioSessao);
+		r.setJogador2(usuarioSessao);
+		resultadoDao.save(r);
+		/* Excluir */
+		
+		if(usuarioSessao != null) {
+			List<Resultado> resultados = resultadoDao.meusJogos(usuarioSessao.getId());
+			LocalDateTime now = LocalDateTime.now(); 
+			model.addAttribute("now", now);
+			model.addAttribute("meusJogos", resultados);
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/meusJogos");
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
