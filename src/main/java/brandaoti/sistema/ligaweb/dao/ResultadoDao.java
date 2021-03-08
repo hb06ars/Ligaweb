@@ -14,7 +14,7 @@ public interface ResultadoDao extends JpaRepository<Resultado, Integer> {
 	@Query(" select u from Usuario u where upper( u.login ) like upper( :login ) and upper( u.senha ) like upper( :senha ) ")
 	Usuario fazerLogin(@Param("login") String login, @Param("senha") String senha);
 	
-	@Query("select r from Resultado r where r.jogador1.id like (:id) or r.jogador2.id like (:id) ")
+	@Query("select r from Resultado r where r.jogador1.id like (:id) or r.jogador2.id like (:id)  order by r.data desc")
 	List<Resultado> meusJogos(@Param("id") Integer id);
 	
 	@Query("select r from Resultado r where r.finalizado = true order by r.data desc")

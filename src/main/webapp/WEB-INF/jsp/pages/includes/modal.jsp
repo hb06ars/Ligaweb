@@ -8,6 +8,7 @@
 <jsp:include page="modais/modalAutor.jsp" />
 <jsp:include page="modais/modalContato.jsp" />
 <jsp:include page="modais/modalImagem.jsp" />
+<jsp:include page="modais/modalConfirmarPlacar.jsp" />
 
 
 

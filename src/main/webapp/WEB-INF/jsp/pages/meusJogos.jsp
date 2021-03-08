@@ -7,7 +7,7 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <!-- HEADER -->
 <!-- MODAL -->
-<jsp:include page="includes/modais/modalFuncionario.jsp" />
+<jsp:include page="includes/modais/modalConfirmarPlacar.jsp" />
 <!-- TABELAS COM FILTRO -->
 <jsp:include page="includes/jquery/filtro.jsp" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script> 
@@ -42,9 +42,7 @@
 		<th style="text-align: center;">Placar</th>
 		<th style="text-align: center;">Visitante</th>
 		
-		<th>Confirmação do Adversário</th>
-		<th>Enviar Placar</th>
-		<th>Recusar Placar</th>
+		<th>Confirmação do Placar</th>
 		<th>Cancelar jogo</th>
 		
 		<tr>
@@ -74,22 +72,35 @@
 			</c:if>
 			
 			<td> ${r.dataAjustada}
-			<td style="text-align: center;"> <a href="https://wa.me/55${r.jogador1.telefone}" > ${r.jogador1.nome} </a>
-			<td style="text-align: center;"> ${r.jogador1_placar}
+			<td style="text-align: center;">
+				<c:set var="tel" value="${r.jogador1.telefone}" />
+				<c:set var="tel" value="${fn:replace(tel,'(', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,')', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,' ', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,'-', '')}" />
+				<a href="https://wa.me/55${tel}" > ${r.jogador1.nome} </a>
+			<td style="text-align: center;">
+				<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador2 == true}">${r.jogador1_placar}</c:if>
+				<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador2 == false}">?</c:if>
 			<td style="text-align: center;"> X
-			<td style="text-align: center;"> ${r.jogador2_placar}
-			<td style="text-align: center;"> <a href="https://wa.me/55${r.jogador2.telefone}" > ${r.jogador2.nome} </a>
+			<td style="text-align: center;"> 
+				<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador2 == true}">${r.jogador2_placar}</c:if>
+				<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador2 == false}">?</c:if>
+			<td style="text-align: center;"> 
+				<c:set var="tel" value="${r.jogador2.telefone}" />
+				<c:set var="tel" value="${fn:replace(tel,'(', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,')', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,' ', '')}" />
+				<c:set var="tel" value="${fn:replace(tel,'-', '')}" />
+				<a href="https://wa.me/55${tel}" > ${r.jogador2.nome} </a>
 			
-			<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador1 == true }">
-				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:pointer;color:green" >thumb_up_alt</span></td>
+			<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador2 == true }">
+				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:default;color:green" >thumb_up_alt</span></td>
 			</c:if>
-			<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador1 == false }">
-				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:pointer;" >pending</span></td>
+			<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador2 == false }">
+				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:default;" onclick="modalConfirmaPlacar(${r.id})" >pending</span></td>
 			</c:if>
-			
-			<td style="text-align: center;"> <span class="material-icons icon" style="cursor:pointer;color:green" onclick="modalDeletar('meusJogos', ${r.id})" >assignment_turned_in</span></td>
-			<td style="text-align: center;"> <span class="material-icons icon" style="cursor:pointer;color:red" onclick="modalDeletar('meusJogos', ${r.id})" >thumb_down_alt</span></td>
-			
+	
 			<c:if test="${r.data gt now}">
 				<td style="text-align: center;" ><span class="material-icons icon" style="cursor:pointer" onclick="modalDeletar('meusJogos', ${r.id})" >delete</span></td>
 			</c:if>

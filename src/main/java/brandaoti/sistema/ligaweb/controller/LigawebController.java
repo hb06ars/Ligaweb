@@ -347,16 +347,67 @@ public class LigawebController {
 	}
 	
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView meusJogos(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
 		/* Excluir */
-		Resultado r = new Resultado();
-		r.setJogador1(usuarioSessao);
-		r.setJogador2(usuarioSessao);
-		resultadoDao.save(r);
+		if(usuarioDao.findAll().size() < 2) {
+			Usuario u = new Usuario();
+			u.setAtivo(true);
+			u.setPrimeiroAcesso(true);
+			u.setTelefone("(11)98937-6271");
+			u.setPerfil(perfilDao.buscarJogador().get(0));
+			u.setLogin("juca123");
+			u.setNome("Juca da Silva");
+			u.setSenha("123");
+			u.setAcesso("");
+			usuarioDao.save(u);
+		}
+		if(resultadoDao.findAll().size() == 0) {
+			Resultado r = new Resultado();
+			r.setJogador1(usuarioSessao);
+			r.setJogador2(usuarioDao.findById(2).get());
+			resultadoDao.save(r);
+		}
+		
 		/* Excluir */
 		
 		if(usuarioSessao != null) {
+			if(concordar != null) {
+				if(concordar == true) {
+					Resultado resultado = resultadoDao.findById(res.getId()).get();
+
+					System.out.println("getJogador1: "+resultado.getJogador1());
+					if(usuarioSessao.getId() == resultado.getJogador1().getId()) {
+						resultado.setConfirmado_jogador1(true);
+					}	
+					if(usuarioSessao.getId() == resultado.getJogador2().getId()) {
+						resultado.setConfirmado_jogador2(true);
+					}	
+					if(resultado.getConfirmado_jogador1() == true && resultado.getConfirmado_jogador2() == true) {
+						resultado.setFinalizado(true);
+					}	
+					resultado.setJogador1_placar(placar_jogador1);
+					resultado.setJogador2_placar(placar_jogador2);
+					resultadoDao.save(resultado);
+				} else {
+					Resultado resultado = resultadoDao.findById(res.getId()).get();
+					if(usuarioSessao.getId() == resultado.getJogador1().getId()) {
+						resultado.setConfirmado_jogador2(false);
+						resultado.setConfirmado_jogador1(true);
+					}
+					if(usuarioSessao.getId() == resultado.getJogador2().getId()) {
+						resultado.setConfirmado_jogador1(false);
+						resultado.setConfirmado_jogador2(true);
+					}
+					resultado.setFinalizado(false);
+					resultado.setJogador1_placar(placar_jogador1);
+					resultado.setJogador2_placar(placar_jogador2);
+					resultadoDao.save(resultado);
+				}
+				
+			}
+			
+			
 			List<Resultado> resultados = resultadoDao.meusJogos(usuarioSessao.getId());
 			LocalDateTime now = LocalDateTime.now(); 
 			model.addAttribute("now", now);

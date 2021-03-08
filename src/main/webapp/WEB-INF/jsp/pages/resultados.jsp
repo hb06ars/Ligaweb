@@ -65,9 +65,13 @@
 		<c:forEach items="${resultados}" var="r">
 			<td> ${r.dataAjustada}
 			<td style="text-align: center;"> ${r.jogador1.nome}
-			<td style="text-align: center;"> ${r.jogador1_placar}
+			<td style="text-align: center;">
+				<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador2 == true}">${r.jogador1_placar}</c:if>
+				<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador2 == false}">?</c:if>
 			<td style="text-align: center;"> X
-			<td style="text-align: center;"> ${r.jogador2_placar}
+			<td style="text-align: center;">
+				<c:if test="${r.confirmado_jogador1 == true && r.confirmado_jogador2 == true}">${r.jogador2_placar}</c:if>
+				<c:if test="${r.confirmado_jogador1 == false || r.confirmado_jogador2 == false}">?</c:if>
 			<td style="text-align: center;"> ${r.jogador2.nome}
 			
 			<c:if test="${usuarioSessao.perfil.admin}">
