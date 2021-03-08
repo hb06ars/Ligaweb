@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import brandaoti.sistema.ligaweb.dao.ClassificacaoDao;
 import brandaoti.sistema.ligaweb.dao.PerfilDao;
 import brandaoti.sistema.ligaweb.dao.ResultadoDao;
 import brandaoti.sistema.ligaweb.dao.UsuarioDao;
+import brandaoti.sistema.ligaweb.model.Classificacao;
 import brandaoti.sistema.ligaweb.model.Perfil;
 import brandaoti.sistema.ligaweb.model.Resultado;
 import brandaoti.sistema.ligaweb.model.Usuario;
@@ -35,6 +37,8 @@ public class LigawebController {
 	private PerfilDao perfilDao;
 	@Autowired
 	private ResultadoDao resultadoDao;
+	@Autowired
+	private ClassificacaoDao classificacaoDao;
 	
 	public static Usuario usuarioSessao;
 	public static String atualizarPagina = null;
@@ -151,6 +155,11 @@ public class LigawebController {
 			u.setSenha("kzdut");
 			u.setAcesso("");
 			usuarioDao.save(u);
+			
+			Classificacao c = new Classificacao();
+			c.setAtivo(true);
+			c.setJogador(u);
+			classificacaoDao.save(c);
 		}
 		
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
@@ -239,6 +248,12 @@ public class LigawebController {
 									user.setSenha(usuario.getSenha());
 									user.setTelefone(usuario.getTelefone());
 									usuarioDao.save(user);
+									
+									Classificacao c = new Classificacao();
+									c.setAtivo(true);
+									c.setJogador(user);
+									classificacaoDao.save(c);
+									
 									msg = "Usuário "+usuario.getLogin()+" cadastrado com sucesso!";
 								} else {
 									erro = "Código de acesso inválido!";
@@ -346,6 +361,19 @@ public class LigawebController {
 		return modelAndView; 
 	}
 	
+	@RequestMapping(value = "/classificacao", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView classificacao(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
+			model.addAttribute("classificacao", classificacao);
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/classificacao");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		return modelAndView; 
+	}
+	
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
@@ -361,6 +389,11 @@ public class LigawebController {
 			u.setSenha("123");
 			u.setAcesso("");
 			usuarioDao.save(u);
+			
+			Classificacao c = new Classificacao();
+			c.setAtivo(true);
+			c.setJogador(u);
+			classificacaoDao.save(c);
 		}
 		if(resultadoDao.findAll().size() == 0) {
 			Resultado r = new Resultado();
@@ -375,8 +408,10 @@ public class LigawebController {
 			if(concordar != null) {
 				if(concordar == true) {
 					Resultado resultado = resultadoDao.findById(res.getId()).get();
-
-					System.out.println("getJogador1: "+resultado.getJogador1());
+					if(!resultado.getConfirmado_jogador1() && !resultado.getConfirmado_jogador2() ) {
+						resultado.setJogador1_placar(placar_jogador1);
+						resultado.setJogador2_placar(placar_jogador2);
+					}
 					if(usuarioSessao.getId() == resultado.getJogador1().getId()) {
 						resultado.setConfirmado_jogador1(true);
 					}	
@@ -384,10 +419,70 @@ public class LigawebController {
 						resultado.setConfirmado_jogador2(true);
 					}	
 					if(resultado.getConfirmado_jogador1() == true && resultado.getConfirmado_jogador2() == true) {
+						//Calculando os pontos
+						Classificacao minhaClassificacao = classificacaoDao.minhaClassificacao(usuarioSessao.getId());
+						Classificacao adversario = new Classificacao();
+						if(usuarioSessao.getId() != resultado.getJogador1().getId()) { /* Adversário = Jogador 1 */
+							adversario = classificacaoDao.minhaClassificacao(resultado.getJogador1().getId());
+							adversario.setGp(adversario.getGp()+resultado.getJogador1_placar());
+							adversario.setGc(adversario.getGc()+resultado.getJogador2_placar());
+							adversario.setSg(adversario.getGp() - adversario.getGc());
+							
+							minhaClassificacao.setGp(minhaClassificacao.getGp()+resultado.getJogador2_placar());
+							minhaClassificacao.setGc(minhaClassificacao.getGc()+resultado.getJogador1_placar());
+							minhaClassificacao.setSg(minhaClassificacao.getGp() - minhaClassificacao.getGc());
+						} else {
+							adversario = classificacaoDao.minhaClassificacao(resultado.getJogador2().getId()); /* Adversário = Jogador 2 */
+							adversario.setGp(adversario.getGp()+resultado.getJogador2_placar());
+							adversario.setGc(adversario.getGc()+resultado.getJogador1_placar());
+							adversario.setSg(adversario.getGp() - adversario.getGc());
+							
+							minhaClassificacao.setGp(minhaClassificacao.getGp()+resultado.getJogador1_placar());
+							minhaClassificacao.setGc(minhaClassificacao.getGc()+resultado.getJogador2_placar());
+							minhaClassificacao.setSg(minhaClassificacao.getGp() - minhaClassificacao.getGc());
+						}
+						
+						if(resultado.getJogador1_placar() > resultado.getJogador2_placar() ) { /*Jogador  Vencendo*/
+							if(usuarioSessao.getId() == resultado.getJogador1().getId()) { /*Eu sou jogador 1*/
+								minhaClassificacao.setJogos(minhaClassificacao.getJogos()+1);
+								adversario.setJogos(adversario.getJogos()+1);
+								minhaClassificacao.setPontos(minhaClassificacao.getPontos()+3);
+								minhaClassificacao.setVitorias(minhaClassificacao.getVitorias()+1);
+								adversario.setDerrotas(adversario.getDerrotas()+1);
+							} else { /*Eu sou jogador 2*/
+								minhaClassificacao.setJogos(minhaClassificacao.getJogos()+1); 
+								adversario.setJogos(adversario.getJogos()+1);
+								adversario.setPontos(adversario.getPontos()+3);
+								adversario.setVitorias(adversario.getVitorias()+1);
+								minhaClassificacao.setDerrotas(minhaClassificacao.getDerrotas()+1);
+							}
+						} else if(resultado.getJogador1_placar() < resultado.getJogador2_placar()) { /*Jogador  Perdendo*/
+							if(usuarioSessao.getId() == resultado.getJogador1().getId()) { /*Eu sou jogador 1*/
+								minhaClassificacao.setJogos(minhaClassificacao.getJogos()+1);
+								adversario.setJogos(adversario.getJogos()+1);
+								minhaClassificacao.setDerrotas(minhaClassificacao.getDerrotas()+1);
+								adversario.setPontos(adversario.getPontos()+3);
+								adversario.setVitorias(adversario.getVitorias()+1);
+							} else { /*Empatando 2*/
+								minhaClassificacao.setJogos(minhaClassificacao.getJogos()+1);
+								adversario.setJogos(adversario.getJogos()+1);
+								adversario.setDerrotas(adversario.getDerrotas()+1);
+								minhaClassificacao.setPontos(minhaClassificacao.getPontos()+3);
+								minhaClassificacao.setVitorias(minhaClassificacao.getVitorias()+1);
+							}
+						} else if(resultado.getJogador1_placar() == resultado.getJogador2_placar()) {
+							minhaClassificacao.setJogos(minhaClassificacao.getJogos()+1);
+							adversario.setJogos(adversario.getJogos()+1);
+							adversario.setEmpates(adversario.getEmpates()+1);
+							minhaClassificacao.setEmpates(minhaClassificacao.getEmpates()+1);
+							minhaClassificacao.setPontos(minhaClassificacao.getPontos()+1);
+							adversario.setPontos(adversario.getPontos()+1);
+						}
+						
+						
+						classificacaoDao.save(minhaClassificacao);
 						resultado.setFinalizado(true);
-					}	
-					resultado.setJogador1_placar(placar_jogador1);
-					resultado.setJogador2_placar(placar_jogador2);
+					}
 					resultadoDao.save(resultado);
 				} else {
 					Resultado resultado = resultadoDao.findById(res.getId()).get();
