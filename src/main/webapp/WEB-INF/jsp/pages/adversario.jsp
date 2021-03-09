@@ -46,7 +46,9 @@
 		</tr>
 		
 		<tr>
-		<th></th>
+		<c:if test="${usuarioSessao.perfil.admin}">
+			<th></th>
+		</c:if>
 		<th><input type="text" id="filtro1"/></th>
 		<th><input type="text" id="filtro2"/></th>
 		
