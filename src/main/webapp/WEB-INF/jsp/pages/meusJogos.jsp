@@ -101,11 +101,11 @@
 				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:default;" onclick="modalConfirmaPlacar(${r.id})" >pending</span></td>
 			</c:if>
 	
-			<c:if test="${r.data gt now}">
+			<c:if test="${r.data gt now && (r.confirmado_jogador1 == false || r.confirmado_jogador2 == false)}">
 				<td style="text-align: center;" ><span class="material-icons icon" style="cursor:pointer" onclick="modalDeletar('meusJogos', ${r.id})" >delete</span></td>
 			</c:if>
 			<c:if test="${r.data lt now}">
-				<td style="text-align: center;" >-</td>
+				<td style="text-align: center;" ></td>
 			</c:if>
 			<tr>	
 		</c:forEach>

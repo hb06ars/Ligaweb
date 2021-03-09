@@ -1,5 +1,7 @@
 package brandaoti.sistema.ligaweb.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -134,12 +136,14 @@ public class LigawebController {
 			p.setNome("Admnistrador");
 			p.setCodigo("1");
 			p.setAdmin(true);
+			p.setJogador(true);
 			perfilDao.save(p);
 			
 			p = new Perfil();
 			p.setAtivo(true);
 			p.setNome("Jogador");
 			p.setCodigo("2");
+			p.setAdmin(false);
 			p.setJogador(true);
 			perfilDao.save(p);
 
@@ -324,6 +328,36 @@ public class LigawebController {
 	}
 	
 	
+	@RequestMapping(value = "/disponibilidade", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView disponibilidade(Model model, String mensagem, String data, Boolean disponivel) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			if(data != null || mensagem != null) {
+				if(data != null) {
+					SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); 
+					Date dia = formato.parse(data);
+					usuarioSessao.setDataDisponibilidade(dia);
+				}
+				if(disponivel != null) {
+					if(disponivel) {
+						usuarioSessao.setDisponivel(true);
+					} else {
+						usuarioSessao.setDisponivel(false);
+					}
+				}
+				if(mensagem != null)
+					usuarioSessao.setMsg(mensagem);
+				usuarioDao.save(usuarioSessao);
+				model.addAttribute("usuarioSessao", usuarioSessao);
+			}
+		}
+		String link = verificaLink("pages/disponibilidade");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		enviaMsg(modelAndView);
+		return modelAndView; 
+	}
+	
+	
 	@RequestMapping(value = "/token", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
 	public ModelAndView token(Model model, Integer criarToken, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		if(usuarioSessao != null) {
@@ -373,6 +407,51 @@ public class LigawebController {
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
 	}
+	
+	
+	@RequestMapping(value = "/adversario", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
+	public ModelAndView adversario(Model model, String id_adv, String data, String hora) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		if(usuarioSessao != null) {
+			if(id_adv != null && data != null && hora != null) {
+				String str = data+" "+hora; 
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
+				LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+				Resultado r = new Resultado();
+				r.setJogador1(usuarioSessao);
+				r.setJogador2(usuarioDao.findById(Integer.parseInt(id_adv)).get());
+				if(r.getJogador2() != null) {
+					if(r.getJogador2().getId() != usuarioSessao.getId()) {
+						//Verifique antes se tem 2 jogos ja jogados entre os dois jogadores...
+						List<Resultado> limite = resultadoDao.limiteDeJogos(usuarioSessao.getId(), r.getJogador2().getId());
+						System.out.println("Limite: " + limite);
+						if(limite.size() < 2) {
+							//Validado e marcando o jogo
+							r.setData(dateTime);
+							resultadoDao.save(r);
+							registraMsg(usuarioSessao.getNome(), "Jogo marcado com sucesso contra "+r.getJogador2().getNome()+"!", "info");
+						} else {
+							registraMsg(usuarioSessao.getNome(), "Você pode jogar até dois jogos (Ida e Volta) contra o "+r.getJogador2().getNome()+" neste campeonato. Consulte o regulamento!", "erro");
+						}
+						
+					} else {
+						registraMsg(usuarioSessao.getNome(), " você não pode marcar jogo contra você mesmo!", "erro");
+					}
+					
+				}
+			}
+			
+			List<Usuario> adversario = usuarioDao.jogadores();
+			model.addAttribute("adversario", adversario);
+			model.addAttribute("usuarioSessao", usuarioSessao);
+		}
+		String link = verificaLink("pages/adversario");
+		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		ModelAndView modelAndView = new ModelAndView(link);
+		enviaMsg(modelAndView);
+		return modelAndView; 
+	}
+	
+	
 	
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 

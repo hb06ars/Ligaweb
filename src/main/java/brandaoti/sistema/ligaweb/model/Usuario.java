@@ -1,5 +1,6 @@
 package brandaoti.sistema.ligaweb.model;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -43,6 +44,15 @@ public class Usuario {
 	
 	@Column
 	private String acesso;
+	
+	@Column
+	private String msg;
+	
+	@Column
+	private Date dataDisponibilidade;
+	
+	@Column
+	private Boolean disponivel = true;
 
 	public Integer getId() {
 		return id;
@@ -115,6 +125,31 @@ public class Usuario {
 	public void setAcesso(String acesso) {
 		this.acesso = acesso;
 	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public Boolean getDisponivel() {
+		return disponivel;
+	}
+
+	public void setDisponivel(Boolean disponivel) {
+		this.disponivel = disponivel;
+	}
+
+	public Date getDataDisponibilidade() {
+		return dataDisponibilidade;
+	}
+
+	public void setDataDisponibilidade(Date dataDisponibilidade) {
+		this.dataDisponibilidade = dataDisponibilidade;
+	}
+
 	
 
 	

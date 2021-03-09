@@ -19,5 +19,8 @@ public interface ResultadoDao extends JpaRepository<Resultado, Integer> {
 	
 	@Query("select r from Resultado r where r.finalizado = true order by r.data desc")
 	List<Resultado> todosResultados();
+	
+	@Query("select r from Resultado r where 1=1 and ((r.jogador2.id like (:jogador1) and r.jogador1.id like (:jogador2)) or (r.jogador1.id like (:jogador1) and r.jogador2.id like (:jogador2)) and r.cancelado = false ) ")
+	List<Resultado> limiteDeJogos(@Param("jogador1") Integer jogador1, @Param("jogador2") Integer jogador2);
 
 }

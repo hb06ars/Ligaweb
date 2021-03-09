@@ -178,6 +178,9 @@ function expandir(campo, quantidade, pasta){
                         <li class="list-unstyled components mb-3">
                         	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/resultados"><span class="material-icons icon text-default-secondary">text_snippet</span> Resultados </a>
                         </li>
+                        <li class="list-unstyled components mb-3">
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;cursor:pointer" onclick="modalRegulamento()" ><span class="material-icons icon text-default-secondary">rule</span> Regulamento </a>
+                        </li>
                         
                     </ul>
                 </li>
@@ -200,19 +203,29 @@ function expandir(campo, quantidade, pasta){
                         </div>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" href="/token">
-                        <div>
-                            <span class="material-icons icon">vpn_key</span>
-                            Token
-                        </div>
-                    </a>
-                </li>
+                <c:if test="${usuarioSessao.perfil.admin }">
+	                <li class="nav-item">
+	                    <a class="nav-link" style="cursor: pointer;" href="/token">
+	                        <div>
+	                            <span class="material-icons icon">vpn_key</span>
+	                            Token
+	                        </div>
+	                    </a>
+	                </li>
+                </c:if>
                 <li class="nav-item">
                     <a class="nav-link" style="cursor: pointer;" href="/senha">
                         <div>
                             <span class="material-icons icon">password</span>
                             Trocar Senha
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="cursor: pointer;" href="/disponibilidade">
+                        <div>
+                            <span class="material-icons icon">today</span>
+                            Disponibilidade
                         </div>
                     </a>
                 </li>

@@ -9,6 +9,8 @@
 <jsp:include page="modais/modalContato.jsp" />
 <jsp:include page="modais/modalImagem.jsp" />
 <jsp:include page="modais/modalConfirmarPlacar.jsp" />
+<jsp:include page="modais/modalMarcarJogo.jsp" />
+<jsp:include page="modais/modalRegulamento.jsp" />
 
 
 

@@ -7,84 +7,77 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <!-- HEADER -->
 <!-- MODAL -->
-<jsp:include page="includes/modais/modalRecado.jsp" />
+<jsp:include page="includes/modais/modalMarcarJogo.jsp" />
 <!-- TABELAS COM FILTRO -->
 <jsp:include page="includes/jquery/filtro.jsp" />
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script> 
 <script type="text/javascript" src="includes/jquery/script.js"></script>
+<link href="script.js" rel="stylesheet" id="style">
 <!-- TABELAS COM FILTRO -->
 <!-- DOWNLOAD EXCEL -->
 <jsp:include page="includes/jquery/excel/downloadExcel.jsp" />
 <!-- DOWNLOAD EXCEL -->
-<!-- UPLOAD EXCEL -->
-<jsp:include page="includes/modais/modalUploadExcel.jsp" />
-<!-- UPLOAD EXCEL -->
 
 <div class="card mb-4">
-
 <div
 	class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-	<h1 class="h4">&nbsp&nbsp Recados</h1>
+	<h1 class="h4">&nbsp&nbspAdversário</h1>
 	<div>
-		<c:if test="${usuarioSessao.perfil.admin}">
-			<button class="shadow btn btn-sm btn-outline-dark" onclick="modalNovoRecado()"><span class="material-icons icon">notification_important</span></button>
-		</c:if>
 		<button class="shadow btn btn-sm btn-outline-dark" onclick="tableToExcel('tabela', 'Documento')"><span class="material-icons icon">save</span></button>
 		&nbsp&nbsp
 	</div>
 </div>
 
 
-
 <div class="card" >
 <div class="card-body p-0 border-0" style="overflow: auto; width: 100%">
-	<table id="tabela" class="table table-striped table-bordered table-sm">
+	<table id="tabela" class="table-responsive table-striped table-sm">
 		<thead>
+		
 		<tr>
-		
-		<th>Remetente </th><th>Para</th><th>Assunto</th> <th>Conteúdo</th> <th>Data</th>
-		
-		<c:if test="${usuarioSessao.perfil.admin}">
-			<th>Excluir</th> 
-		</c:if>
+		<th>Nome</th>
+		<th>Login</th>
+		<th>Marcar Jogo</th>
+		<th>Disponibilidade</th>
+		<th>Observação</th>
+		</tr>
 		
 		<tr>
 		<th><input type="text" id="filtro1"/></th>
 		<th><input type="text" id="filtro2"/></th>
-		<th><input type="text" id="filtro3"/></th>
-		<th><input type="text" id="filtro4"/></th>
-		<th><input type="text" id="filtro5"/></th>
-		<th></th>
-		</tr>
 		
 		</thead>
 		<tbody>
-		<tr>
-		
-		
-		<c:forEach items="${recados}" var="r">
-			<td>${r.remetente}  
-			<td>${r.para}
-			<td>${r.assunto}
-			<td>${r.conteudo}
-			<td>${r.data}
-					  
-			<c:if test="${usuarioSessao.perfil.admin}">
-				<td><span class="material-icons icon" style="cursor:pointer" onclick="modalDeletar('recados', ${r.id})" >delete</span></td>
+		<c:forEach items="${adversario}" var="a">
+			<c:set var="tel" value="${a.telefone}" />
+			<c:set var="tel" value="${fn:replace(tel,'(', '')}" />
+			<c:set var="tel" value="${fn:replace(tel,')', '')}" />
+			<c:set var="tel" value="${fn:replace(tel,' ', '')}" />
+			<c:set var="tel" value="${fn:replace(tel,'-', '')}" />
+			<td> <a href="https://wa.me/55${tel}" > ${a.nome} </a>
+			<td> ${a.login}
+			<c:if test="${a.disponivel == true }">
+				<td style="text-align: center;"> <span class="material-icons icon" onclick="modalMarcarJogo(${a.id},'${a.nome}')" style="cursor:default;color:green" >task_alt</span></td>
 			</c:if>
-			<tr>	
+			<c:if test="${a.disponivel == false }">
+				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:default;color:red" >unpublished</span></td>
+			</c:if>
+			<td> <fmt:formatDate pattern="dd/MM/yyyy" value="${a.dataDisponibilidade}" />
+			<td> ${a.msg}
+			<tr>
 		</c:forEach>
 		</tbody>
 	</table>
 	</div>
 </div>
+
 <br>
+
 </div>
 
 <!-- FOOTER -->
 <jsp:include page="includes/barraFooter.jsp" />
 <!-- FOOTER -->
-
 <!-- FOOTER -->
 <jsp:include page="includes/footer.jsp" />
 <!-- FOOTER -->
