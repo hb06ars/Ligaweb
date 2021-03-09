@@ -178,6 +178,9 @@ function expandir(campo, quantidade, pasta){
                         <li class="list-unstyled components mb-3">
                         	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/resultados"><span class="material-icons icon text-default-secondary">text_snippet</span> Resultados </a>
                         </li>
+                        <li class="list-unstyled components mb-3">
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;cursor:pointer" onclick="modalRegulamento()" ><span class="material-icons icon text-default-secondary">rule</span> Regulamento </a>
+                        </li>
                         
                     </ul>
                 </li>

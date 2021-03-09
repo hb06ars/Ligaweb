@@ -329,17 +329,26 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/disponibilidade", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView disponibilidade(Model model, String mensagem, String data) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView disponibilidade(Model model, String mensagem, String data, Boolean disponivel) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		if(usuarioSessao != null) {
-			if(data != null) {
-				SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); 
-				Date dia = formato.parse(data);
-				usuarioSessao.setDataDisponibilidade(dia);
+			if(data != null || mensagem != null) {
+				if(data != null) {
+					SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); 
+					Date dia = formato.parse(data);
+					usuarioSessao.setDataDisponibilidade(dia);
+				}
+				if(disponivel != null) {
+					if(disponivel) {
+						usuarioSessao.setDisponivel(true);
+					} else {
+						usuarioSessao.setDisponivel(false);
+					}
+				}
 				if(mensagem != null)
 					usuarioSessao.setMsg(mensagem);
 				usuarioDao.save(usuarioSessao);
+				model.addAttribute("usuarioSessao", usuarioSessao);
 			}
-			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = verificaLink("pages/disponibilidade");
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
@@ -401,8 +410,36 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/adversario", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView adversario(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView adversario(Model model, String id_adv, String data, String hora) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		if(usuarioSessao != null) {
+			if(id_adv != null && data != null && hora != null) {
+				String str = data+" "+hora; 
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
+				LocalDateTime dateTime = LocalDateTime.parse(str, formatter);
+				Resultado r = new Resultado();
+				r.setJogador1(usuarioSessao);
+				r.setJogador2(usuarioDao.findById(Integer.parseInt(id_adv)).get());
+				if(r.getJogador2() != null) {
+					if(r.getJogador2().getId() != usuarioSessao.getId()) {
+						//Verifique antes se tem 2 jogos ja jogados entre os dois jogadores...
+						List<Resultado> limite = resultadoDao.limiteDeJogos(usuarioSessao.getId(), r.getJogador2().getId());
+						System.out.println("Limite: " + limite);
+						if(limite.size() < 2) {
+							//Validado e marcando o jogo
+							r.setData(dateTime);
+							resultadoDao.save(r);
+							registraMsg(usuarioSessao.getNome(), "Jogo marcado com sucesso contra "+r.getJogador2().getNome()+"!", "info");
+						} else {
+							registraMsg(usuarioSessao.getNome(), "Você pode jogar até dois jogos (Ida e Volta) contra o "+r.getJogador2().getNome()+" neste campeonato. Consulte o regulamento!", "erro");
+						}
+						
+					} else {
+						registraMsg(usuarioSessao.getNome(), " você não pode marcar jogo contra você mesmo!", "erro");
+					}
+					
+				}
+			}
+			
 			List<Usuario> adversario = usuarioDao.jogadores();
 			model.addAttribute("adversario", adversario);
 			model.addAttribute("usuarioSessao", usuarioSessao);
@@ -410,6 +447,7 @@ public class LigawebController {
 		String link = verificaLink("pages/adversario");
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
+		enviaMsg(modelAndView);
 		return modelAndView; 
 	}
 	

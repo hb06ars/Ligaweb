@@ -35,8 +35,16 @@
 		  				<input class="form-control" id="mensagem" name="mensagem" type="text" value="${usuarioSessao.msg }" aria-describedby="inputGroup-sizing-default">
 					</div>
 					
-		  			<div class="input-group mb-1" style="overflow: auto; width: 30%">
-		  				<input class="form-control" id="data" name="data" type="date" value="${usuarioSessao.dataDisponibilidade }" required aria-describedby="inputGroup-sizing-default">
+					<div class="input-group mb-1" style="overflow: auto; width: 40%">
+		  				<input class="form-control" id="data" name="data" type="date" value="${usuarioSessao.dataDisponibilidade }" aria-describedby="inputGroup-sizing-default">
+					</div>
+					<div class="input-group mb-1" style="overflow: auto; width: 10%">
+					</div>
+		  			<div class="input-group mb-1" style="overflow: auto; width: 40%">
+		  				<select id="disponivel"  class="form-control" name="disponivel">
+						  <option value="1">Disponível</option>
+						  <option value="0">Indisponível</option>
+						</select>
 					</div>
 				</div>
 	      	</div>

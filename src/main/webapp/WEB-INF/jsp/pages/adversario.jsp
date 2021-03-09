@@ -7,7 +7,7 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <!-- HEADER -->
 <!-- MODAL -->
-<jsp:include page="includes/modais/modalFuncionario.jsp" />
+<jsp:include page="includes/modais/modalMarcarJogo.jsp" />
 <!-- TABELAS COM FILTRO -->
 <jsp:include page="includes/jquery/filtro.jsp" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script> 
@@ -56,7 +56,12 @@
 			<c:set var="tel" value="${fn:replace(tel,'-', '')}" />
 			<td> <a href="https://wa.me/55${tel}" > ${a.nome} </a>
 			<td> ${a.login}
-			<td> -
+			<c:if test="${a.disponivel == true }">
+				<td style="text-align: center;"> <span class="material-icons icon" onclick="modalMarcarJogo(${a.id},'${a.nome}')" style="cursor:default;color:green" >task_alt</span></td>
+			</c:if>
+			<c:if test="${a.disponivel == false }">
+				<td style="text-align: center;"> <span class="material-icons icon" style="cursor:default;color:red" >unpublished</span></td>
+			</c:if>
 			<td> <fmt:formatDate pattern="dd/MM/yyyy" value="${a.dataDisponibilidade}" />
 			<td> ${a.msg}
 			<tr>
