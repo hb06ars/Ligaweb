@@ -25,7 +25,12 @@
 	<div>
 		<button class="shadow btn btn-sm btn-outline-dark" onclick="tableToExcel('tabela', 'Documento')"><span class="material-icons icon">save</span></button>
 		&nbsp&nbsp
+		<c:if test="${usuarioSessao.perfil.admin }">
+			<button class="shadow btn btn-sm btn-outline-dark" onclick="modalDeletar('classificacao', 0)"><span class="material-icons icon">delete</span></button>
+			&nbsp&nbsp
+		</c:if>
 	</div>
+	
 </div>
 
 

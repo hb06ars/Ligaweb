@@ -221,6 +221,58 @@ public class LigawebController {
 				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Resultados", "Jogo deletado com sucesso.", "erro");
 			}
+			if(tabela.equals("excluirUsuario")) {
+				link = verificaLink("pages/adversario");
+				atualizarPagina = "/adversario";
+				Usuario objeto = usuarioDao.findById(id).get();
+				if(objeto != null) {
+					Classificacao cl = classificacaoDao.minhaClassificacao(id);
+					if(cl != null)
+						classificacaoDao.deleteById(cl.getId());
+					List<Resultado> re = resultadoDao.meusJogos(id);
+					if(re != null) {
+						for(Resultado r : re) {
+							resultadoDao.deleteById(r.getId());
+							resultadoDao.flush();
+						}
+					}
+					usuarioDao.deleteById(objeto.getId());
+					usuarioDao.flush();
+				}
+				List<Usuario> adversario = usuarioDao.jogadores();
+				model.addAttribute("adversario", adversario);
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Jogador", "Jogador deletado com sucesso.", "erro");
+			}
+			if(tabela.equals("classificacao")) {
+				atualizarPagina = "/classificacao";
+				Usuario objeto = usuarioDao.findById(id).get();
+				if(objeto != null) {
+					resultadoDao.deleteById(objeto.getId());
+					resultadoDao.flush();
+				}
+				List<Classificacao> classificacaoLimpar = classificacaoDao.findAll();
+				if(classificacaoLimpar != null) {
+					for(Classificacao c : classificacaoLimpar) {
+						c.setPontos(0);
+						c.setVitorias(0);
+						c.setEmpates(0);
+						c.setDerrotas(0);
+						c.setGp(0);
+						c.setGc(0);
+						c.setSg(0);
+						c.setJogos(0);
+						classificacaoDao.save(c);
+					}
+				}
+				List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
+				model.addAttribute("classificacao", classificacao);
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Jogos", "Jogos deletados com sucesso.", "erro");
+			}
+			
 		}
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -457,7 +509,7 @@ public class LigawebController {
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
 		/*
-		 * --- Excluir ---
+		// Excluir ------------------------------------------------------------------------
 		if(usuarioDao.findAll().size() < 2) {
 			Usuario u = new Usuario();
 			u.setAtivo(true);
@@ -469,19 +521,16 @@ public class LigawebController {
 			u.setSenha("123");
 			u.setAcesso("");
 			usuarioDao.save(u);
-			
 			Classificacao c = new Classificacao();
 			c.setAtivo(true);
 			c.setJogador(u);
 			classificacaoDao.save(c);
-		}
-		if(resultadoDao.findAll().size() == 0) {
 			Resultado r = new Resultado();
 			r.setJogador1(usuarioSessao);
-			r.setJogador2(usuarioDao.findById(2).get());
+			r.setJogador2(usuarioDao.jogadores().get(1));
 			resultadoDao.save(r);
 		}
-		* --- Excluir --- 
+		// Excluir ------------------------------------------------------------------------
 		*/
 		
 		if(usuarioSessao != null) {
