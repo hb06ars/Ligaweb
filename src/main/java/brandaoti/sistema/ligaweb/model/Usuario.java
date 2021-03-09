@@ -43,6 +43,12 @@ public class Usuario {
 	
 	@Column
 	private String acesso;
+	
+	@Column
+	private String msg;
+	
+	@Column
+	private Date dataDisponibilidade;
 
 	public Integer getId() {
 		return id;
@@ -115,6 +121,23 @@ public class Usuario {
 	public void setAcesso(String acesso) {
 		this.acesso = acesso;
 	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public Date getDataDisponibilidade() {
+		return dataDisponibilidade;
+	}
+
+	public void setDataDisponibilidade(Date dataDisponibilidade) {
+		this.dataDisponibilidade = dataDisponibilidade;
+	}
+
 	
 
 	

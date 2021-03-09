@@ -200,19 +200,29 @@ function expandir(campo, quantidade, pasta){
                         </div>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" href="/token">
-                        <div>
-                            <span class="material-icons icon">vpn_key</span>
-                            Token
-                        </div>
-                    </a>
-                </li>
+                <c:if test="${usuarioSessao.perfil.admin }">
+	                <li class="nav-item">
+	                    <a class="nav-link" style="cursor: pointer;" href="/token">
+	                        <div>
+	                            <span class="material-icons icon">vpn_key</span>
+	                            Token
+	                        </div>
+	                    </a>
+	                </li>
+                </c:if>
                 <li class="nav-item">
                     <a class="nav-link" style="cursor: pointer;" href="/senha">
                         <div>
                             <span class="material-icons icon">password</span>
                             Trocar Senha
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="cursor: pointer;" href="/disponibilidade">
+                        <div>
+                            <span class="material-icons icon">today</span>
+                            Disponibilidade
                         </div>
                     </a>
                 </li>
