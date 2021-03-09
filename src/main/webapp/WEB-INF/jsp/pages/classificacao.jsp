@@ -7,7 +7,6 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <!-- HEADER -->
 <!-- MODAL -->
-<jsp:include page="includes/modais/modalFuncionario.jsp" />
 <!-- TABELAS COM FILTRO -->
 <jsp:include page="includes/jquery/filtro.jsp" />
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script> 
