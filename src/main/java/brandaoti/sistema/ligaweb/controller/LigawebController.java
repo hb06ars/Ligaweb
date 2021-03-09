@@ -504,6 +504,8 @@ public class LigawebController {
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
+		/*
+		// Excluir ----------------
 		if(usuarioDao.findAll().size() < 2) {
 			Usuario u = new Usuario();
 			u.setAtivo(true);
@@ -524,7 +526,8 @@ public class LigawebController {
 			r.setJogador2(usuarioDao.jogadores().get(1));
 			resultadoDao.save(r);
 		}
-		
+		// Excluir ----------------
+		*/
 		
 		if(usuarioSessao != null) {
 			if(concordar != null) {
