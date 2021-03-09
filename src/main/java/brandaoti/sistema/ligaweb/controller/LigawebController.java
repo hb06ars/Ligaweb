@@ -246,12 +246,8 @@ public class LigawebController {
 				registraMsg("Jogador", "Jogador deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("classificacao")) {
+				link = verificaLink("pages/classificacao");
 				atualizarPagina = "/classificacao";
-				Usuario objeto = usuarioDao.findById(id).get();
-				if(objeto != null) {
-					resultadoDao.deleteById(objeto.getId());
-					resultadoDao.flush();
-				}
 				List<Classificacao> classificacaoLimpar = classificacaoDao.findAll();
 				if(classificacaoLimpar != null) {
 					for(Classificacao c : classificacaoLimpar) {
@@ -509,7 +505,7 @@ public class LigawebController {
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
 		/*
-		// Excluir ------------------------------------------------------------------------
+		// Excluir ----------------
 		if(usuarioDao.findAll().size() < 2) {
 			Usuario u = new Usuario();
 			u.setAtivo(true);
@@ -530,7 +526,7 @@ public class LigawebController {
 			r.setJogador2(usuarioDao.jogadores().get(1));
 			resultadoDao.save(r);
 		}
-		// Excluir ------------------------------------------------------------------------
+		// Excluir ----------------
 		*/
 		
 		if(usuarioSessao != null) {
