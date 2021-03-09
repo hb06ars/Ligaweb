@@ -221,6 +221,36 @@ public class LigawebController {
 				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Resultados", "Jogo deletado com sucesso.", "erro");
 			}
+			if(tabela.equals("classificacao")) {
+				atualizarPagina = "/classificacao";
+				List<Resultado> objeto = resultadoDao.findAll();
+				if(objeto != null) {
+					for(Resultado r : objeto) {
+						resultadoDao.deleteById(r.getId());
+						resultadoDao.flush();
+					}
+				}
+				List<Classificacao> classificacaoLimpar = classificacaoDao.findAll();
+				if(classificacaoLimpar != null) {
+					for(Classificacao c : classificacaoLimpar) {
+						c.setPontos(0);
+						c.setVitorias(0);
+						c.setEmpates(0);
+						c.setDerrotas(0);
+						c.setGp(0);
+						c.setGc(0);
+						c.setSg(0);
+						c.setJogos(0);
+						classificacaoDao.save(c);
+					}
+				}
+				List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
+				model.addAttribute("classificacao", classificacao);
+				model.addAttribute("atualizarPagina", atualizarPagina);
+				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				registraMsg("Jogos", "Jogos deletados com sucesso.", "erro");
+			}
+			
 		}
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -456,7 +486,8 @@ public class LigawebController {
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
 	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
-		/* Excluir */
+		/*
+		 * --- Excluir ---
 		if(usuarioDao.findAll().size() < 2) {
 			Usuario u = new Usuario();
 			u.setAtivo(true);
@@ -480,8 +511,8 @@ public class LigawebController {
 			r.setJogador2(usuarioDao.findById(2).get());
 			resultadoDao.save(r);
 		}
-		
-		/* Excluir */
+		* --- Excluir --- 
+		*/
 		
 		if(usuarioSessao != null) {
 			if(concordar != null) {
