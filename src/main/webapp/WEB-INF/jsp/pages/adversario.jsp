@@ -35,6 +35,9 @@
 		<thead>
 		
 		<tr>
+		<c:if test="${usuarioSessao.perfil.admin}">
+			<th>Excluir</th>
+		</c:if>
 		<th>Nome</th>
 		<th>Login</th>
 		<th>Marcar Jogo</th>
@@ -43,12 +46,17 @@
 		</tr>
 		
 		<tr>
+		<th></th>
 		<th><input type="text" id="filtro1"/></th>
 		<th><input type="text" id="filtro2"/></th>
 		
 		</thead>
 		<tbody>
+		
 		<c:forEach items="${adversario}" var="a">
+			<c:if test="${usuarioSessao.perfil.admin}">
+				<td><span class="material-icons icon" style="cursor:pointer" onclick="modalDeletar('excluirUsuario', ${a.id})" >delete</span></td>
+			</c:if>
 			<c:set var="tel" value="${a.telefone}" />
 			<c:set var="tel" value="${fn:replace(tel,'(', '')}" />
 			<c:set var="tel" value="${fn:replace(tel,')', '')}" />
