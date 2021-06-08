@@ -208,7 +208,7 @@ public class LigawebController {
 		}
 		
 		
-		
+		/*
 		MataMata j = new MataMata();
 		j.setJogador("Henrique");
 		j.setEscudo("https://logodetimes.com/times/arsenal/logo-arsenal-256.png");
@@ -289,7 +289,7 @@ public class LigawebController {
 		j.setEscudo("https://upload.wikimedia.org/wikipedia/pt/thumb/b/b8/AFC_Ajax_Amsterdam.svg/1200px-AFC_Ajax_Amsterdam.svg.png");
 		j.setOrdem(16);
 		mataMataDao.save(j);
-		
+		*/
 		
 		
 		
