@@ -184,8 +184,27 @@ function expandir(campo, quantidade, pasta){
                         
                     </ul>
                 </li>
-                 
                 
+                
+                <li class="nav-item">
+                    <a href="#menuTorneio" data-toggle="collapse" class="nav-link">
+						<div>
+                            <span class="material-icons icon">account_tree</span>
+                           <i class="fas fa-clipboard"></i>&nbsp Torneio
+                        </div>
+                        <span class="arrow material-icons">chevron_right</span>
+					</a>
+                    
+                    <ul class="collapse" id="menuTorneio">
+                        <li class="list-unstyled components mb-3" >
+                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/mata-mata"><span class="material-icons icon text-default-secondary">add_circle</span> Novo Torneio </a>
+                        </li>
+	                        <li class="list-unstyled components mb-3" >
+	                        	<a class="text-default-secondary" style="text-decoration:none;color:inherit;" href="/iniciarMataMata"><span class="material-icons icon text-default-secondary">search</span> Ver torneio </a>
+	                        </li>
+                    </ul>
+                </li>
+                 
                 
                 <li class="nav-item">
                     <a class="nav-link" href="https://www.facebook.com">

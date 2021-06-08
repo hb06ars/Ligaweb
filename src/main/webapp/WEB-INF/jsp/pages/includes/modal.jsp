@@ -12,6 +12,6 @@
 <jsp:include page="modais/modalConfirmarPlacar.jsp" />
 <jsp:include page="modais/modalMarcarJogo.jsp" />
 <jsp:include page="modais/modalRegulamento.jsp" />
-
-
+<jsp:include page="modais/modalVencedor.jsp" />
+<jsp:include page="modais/modalNovoTorneio.jsp" />
 
