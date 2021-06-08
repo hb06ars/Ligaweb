@@ -319,7 +319,7 @@ public class LigawebController {
 				atualizarPagina = "/token";
 				Usuario objeto = usuarioDao.findById(id).get();
 				if(objeto != null)
-					usuarioDao.deleteById(id);
+					usuarioDao.delete(objeto);
 				usuarioDao.flush();
 				List<Usuario> tokens = usuarioDao.buscaTokens();
 				model.addAttribute("atualizarPagina", atualizarPagina);
@@ -330,9 +330,9 @@ public class LigawebController {
 			if(tabela.equals("meusJogos")) {
 				atualizarPagina = "/meusJogos";
 				Resultado objeto = resultadoDao.findById(id).get();
-				if(objeto != null)
-					resultadoDao.deleteById(id);
-				resultadoDao.flush();
+				if(objeto != null) {
+					resultadoDao.delete(objeto);
+				}	
 				List<Resultado> resultados = resultadoDao.todosResultados();
 				model.addAttribute("atualizarPagina", atualizarPagina);
 				model.addAttribute("meusJogos", resultados);
