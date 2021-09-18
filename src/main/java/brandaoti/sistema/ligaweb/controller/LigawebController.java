@@ -1,5 +1,6 @@
 package brandaoti.sistema.ligaweb.controller;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -9,6 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,7 +47,7 @@ import brandaoti.sistema.ligaweb.model.Usuario;
 
 
 @Controller
-public class LigawebController {
+public class LigawebController extends HttpServlet {
 	
 	@Autowired
 	private UsuarioDao usuarioDao;
@@ -62,14 +68,14 @@ public class LigawebController {
 	@Autowired
 	private OitavasDao oitavasDao;
 	
-	public static Usuario usuarioSessao;
-	public static String atualizarPagina = null;
+	//public static Usuario usuarioSessao;
+	//public static String atualizarPagina = null;
 	public static String mensagem = "";
 	public static String tituloMensagem = "";
 	public static String tipoMensagem = "";
 	public static String periodoAtual = "";
 	public static String hoje = "";
-	public static String itemMenuSelecionado = "home";
+	//public static String itemMenuSelecionado = "home";
 	
 	public Integer[] gerarAleatorios(Integer quantidade) {
 		Integer[] jogo = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -92,18 +98,6 @@ public class LigawebController {
 		    return jogo;
 	}
 	
-	public String verificaLink(String link) {
-		String direcao = "deslogar";
-		if(usuarioSessao != null) {
-			direcao = link;
-			itemMenuSelecionado = link;
-		} else {
-			direcao = "deslogar";
-			atualizarPagina = null;
-			itemMenuSelecionado = "home";
-		}
-		return direcao;
-	}
 	
 	public void registraMsg(String titulo, String msg, String tipo) {
 		tituloMensagem = titulo;
@@ -166,7 +160,7 @@ public class LigawebController {
 	}
 	
 	@GetMapping({"/","/index"}) 
-		public ModelAndView index(Model model) { 
+		public ModelAndView index(HttpServletRequest request, HttpServletResponse response, Model model) { 
 		ModelAndView modelAndView = new ModelAndView("index");
 		List<Usuario> usuarios = usuarioDao.findAll();
 		List<Perfil> perfis = perfilDao.findAll();
@@ -296,23 +290,33 @@ public class LigawebController {
 		
 		
 		
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		model.addAttribute("itemMenuSelecionado", "home");
 		return modelAndView; 
 	}
 	
 	@GetMapping(value = "/deslogar")
-	public ModelAndView deslogar(Model model) {  
+	public void deslogar(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {  
+		HttpSession session = request.getSession();
 		String link = "/deslogar";
-		usuarioSessao = null;
-		ModelAndView modelAndView = new ModelAndView(link); 
-		return modelAndView; 
+		session.invalidate();
+		response.sendRedirect("/");
 	}
 	
 	
 	@RequestMapping(value = "/adm/deletando/{tabela}/{id}", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE}) // Pagina de Alteração de Perfil
-	public ModelAndView deletando(Model model,@PathVariable("tabela") String tabela, @PathVariable("id") Integer id) { //Função e alguns valores que recebe...
-		String link = verificaLink("/deslogar");
-		if(usuarioSessao.getPerfil().getAdmin()) {
+	public ModelAndView deletando(HttpServletRequest request, HttpServletResponse response, Model model,@PathVariable("tabela") String tabela, @PathVariable("id") Integer id) { //Função e alguns valores que recebe...
+		String link = "/deslogar";
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+			if(session.getAttribute("usuarioSessao") != null) {
+				usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+			}
+			if(session.getAttribute("itemMenuSelecionado") != null) {
+				itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+			}
+		if(usuarioSessao != null && usuarioSessao.getPerfil().getAdmin()) {
 			model.addAttribute("usuarioSessao", usuarioSessao);
 			link = "/pages/"+tabela;
 			if(tabela.equals("token")) {
@@ -352,7 +356,7 @@ public class LigawebController {
 				registraMsg("Resultados", "Jogo deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("excluirUsuario")) {
-				link = verificaLink("pages/adversario");
+				link = "pages/adversario";
 				atualizarPagina = "/adversario";
 				Usuario objeto = usuarioDao.findById(id).get();
 				if(objeto != null) {
@@ -376,7 +380,7 @@ public class LigawebController {
 				registraMsg("Jogador", "Jogador deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("classificacao")) {
-				link = verificaLink("pages/classificacao");
+				link = "pages/classificacao";
 				atualizarPagina = "/classificacao";
 				List<Classificacao> classificacaoLimpar = classificacaoDao.findAll();
 				if(classificacaoLimpar != null) {
@@ -408,7 +412,7 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/criar", method = {RequestMethod.POST,RequestMethod.GET})
-	public ModelAndView criar(Model model, Usuario usuario, String codigoAcesso, String confirmaSenha) {  
+	public ModelAndView criar(HttpServletRequest request, HttpServletResponse response, Model model, Usuario usuario, String codigoAcesso, String confirmaSenha) {  
 		String link = "/criar";
 		String erro="";
 		String msg="";
@@ -463,14 +467,18 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/home", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView logar(Model model, @RequestParam(value = "usuarioVal", defaultValue = "", required=false ) String variavelUsuario, @RequestParam(value = "senhaVal", defaultValue = "", required=false ) String variavelSenha) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView logar(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "usuarioVal", defaultValue = "", required=false ) String variavelUsuario, @RequestParam(value = "senhaVal", defaultValue = "", required=false ) String variavelSenha) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		HttpSession session = request.getSession();
+		String itemMenuSelecionado = "";
+		String link = "pages/deslogar";
 		Usuario usu = usuarioDao.fazerLogin(variavelUsuario, variavelSenha);
-		if(usu != null)
-			usuarioSessao = usu;
-		if(usu != null || usuarioSessao != null) {
-			model.addAttribute("usuarioSessao", usuarioSessao);
+		if(usu != null) {
+			model.addAttribute("usuarioSessao", usu);
+			link = "pages/home";
+		} else {
+			link = "deslogar";
 		}
-		String link = verificaLink("pages/home");
+		
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
@@ -478,7 +486,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/senha", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView senha(Model model, String confirmaSenha, String senhaAtual, String novaSenha, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView senha(HttpServletRequest request, HttpServletResponse response, Model model, String confirmaSenha, String senhaAtual, String novaSenha, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(confirmaSenha != null) {
 				if(!confirmaSenha.equals("")) {
@@ -498,7 +516,7 @@ public class LigawebController {
 			}
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/senha");
+		String link = "pages/senha";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -507,7 +525,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/disponibilidade", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView disponibilidade(Model model, String mensagem, String data, Boolean disponivel) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView disponibilidade(HttpServletRequest request, HttpServletResponse response, Model model, String mensagem, String data, Boolean disponivel) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(data != null || mensagem != null) {
 				if(data != null) {
@@ -528,7 +556,7 @@ public class LigawebController {
 				model.addAttribute("usuarioSessao", usuarioSessao);
 			}
 		}
-		String link = verificaLink("pages/disponibilidade");
+		String link = "pages/disponibilidade";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -537,7 +565,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/token", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView token(Model model, Integer criarToken, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView token(HttpServletRequest request, HttpServletResponse response, Model model, Integer criarToken, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(criarToken != null) {
 				if(criarToken == 1) {
@@ -553,7 +591,7 @@ public class LigawebController {
 			model.addAttribute("tokens", tokens);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/token");
+		String link = "pages/token";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
@@ -561,26 +599,46 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/resultados", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView resultados(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView resultados(HttpServletRequest request, HttpServletResponse response, Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			List<Resultado> resultados = resultadoDao.todosResultados();
 			model.addAttribute("resultados", resultados);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/resultados");
+		String link = "pages/resultados";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
 	}
 	
 	@RequestMapping(value = "/classificacao", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView classificacao(Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView classificacao(HttpServletRequest request, HttpServletResponse response, Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
 			model.addAttribute("classificacao", classificacao);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/classificacao");
+		String link = "pages/classificacao";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
@@ -588,7 +646,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/adversario", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView adversario(Model model, String id_adv, String data, String hora) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView adversario(HttpServletRequest request, HttpServletResponse response, Model model, String id_adv, String data, String hora) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(id_adv != null && data != null && hora != null) {
 				String str = data+" "+hora; 
@@ -622,7 +690,7 @@ public class LigawebController {
 			model.addAttribute("adversario", adversario);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/adversario");
+		String link = "pages/adversario";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		enviaMsg(modelAndView);
@@ -632,7 +700,7 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView meusJogos(Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView meusJogos(HttpServletRequest request, HttpServletResponse response, Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
 		/*
 		// Excluir ----------------
@@ -658,7 +726,16 @@ public class LigawebController {
 		}
 		// Excluir ----------------
 		*/
-		
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(concordar != null) {
 				if(concordar == true) {
@@ -764,7 +841,7 @@ public class LigawebController {
 			model.addAttribute("meusJogos", resultados);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/meusJogos");
+		String link = "pages/meusJogos";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
@@ -772,7 +849,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/mata-mata", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView mataMata(Model model, MataMata mataMata, String remove, Integer novoTorneio) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView mataMata(HttpServletRequest request, HttpServletResponse response, Model model, MataMata mataMata, String remove, Integer novoTorneio) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(novoTorneio != null && novoTorneio > 0) {
 				for(MataMata ob : mataMataDao.findAll()) {
@@ -817,7 +904,7 @@ public class LigawebController {
 			model.addAttribute("mataMata", mataMataTimes);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
-		String link = verificaLink("pages/mataMata");
+		String link = "pages/mataMata";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
@@ -825,7 +912,17 @@ public class LigawebController {
 	
 	
 	@RequestMapping(value = "/iniciarMataMata", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView iniciarMataMata(Model model, MataMata mataMata, String remove, String idDisputa, String timeVencedor, String escudoVencedor, String timePerdedor, String escudoPerdedor) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public ModelAndView iniciarMataMata(HttpServletRequest request, HttpServletResponse response, Model model, MataMata mataMata, String remove, String idDisputa, String timeVencedor, String escudoVencedor, String timePerdedor, String escudoPerdedor) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+		String atualizarPagina = "";
+		String itemMenuSelecionado = "";
+		HttpSession session = request.getSession();
+		Usuario usuarioSessao = new Usuario();
+		if(session.getAttribute("usuarioSessao") != null) {
+			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
+		}
+		if(session.getAttribute("itemMenuSelecionado") != null) {
+			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
+		}
 		if(usuarioSessao != null) {
 			if(mataMataDao.vencedorNulo().size() == 0) {
 				//Preparar a proxima fase
@@ -1061,7 +1158,7 @@ public class LigawebController {
 			model.addAttribute("preenchidos", preenchidos);
 		}
 		
-		String link = verificaLink("pages/iniciarMataMata");
+		String link = "pages/iniciarMataMata";
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
 		ModelAndView modelAndView = new ModelAndView(link);
 		return modelAndView; 
