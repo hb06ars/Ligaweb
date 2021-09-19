@@ -473,10 +473,17 @@ public class LigawebController extends HttpServlet {
 		String link = "pages/deslogar";
 		Usuario usu = usuarioDao.fazerLogin(variavelUsuario, variavelSenha);
 		if(usu != null) {
+			itemMenuSelecionado = "home";
 			model.addAttribute("usuarioSessao", usu);
 			link = "pages/home";
+			session.setAttribute("usuarioSessao", usu);
 		} else {
 			link = "deslogar";
+		}
+		if(session.getAttribute("usuarioSessao") != null) {
+			itemMenuSelecionado = "home";
+			link = "pages/home";
+			usu = (Usuario) session.getAttribute("usuarioSessao");
 		}
 		
 		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
@@ -611,6 +618,7 @@ public class LigawebController extends HttpServlet {
 			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
 		}
 		if(usuarioSessao != null) {
+			itemMenuSelecionado = "pages/resultados";
 			List<Resultado> resultados = resultadoDao.todosResultados();
 			model.addAttribute("resultados", resultados);
 			model.addAttribute("usuarioSessao", usuarioSessao);
@@ -630,11 +638,10 @@ public class LigawebController extends HttpServlet {
 		if(session.getAttribute("usuarioSessao") != null) {
 			usuarioSessao = (Usuario) session.getAttribute("usuarioSessao");
 		}
-		if(session.getAttribute("itemMenuSelecionado") != null) {
-			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
-		}
 		if(usuarioSessao != null) {
+			itemMenuSelecionado = "pages/classificacao";
 			List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
+			model.addAttribute("classificacao", "classificacao");
 			model.addAttribute("classificacao", classificacao);
 			model.addAttribute("usuarioSessao", usuarioSessao);
 		}
@@ -658,6 +665,7 @@ public class LigawebController extends HttpServlet {
 			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
 		}
 		if(usuarioSessao != null) {
+			itemMenuSelecionado = "pages/adversario";
 			if(id_adv != null && data != null && hora != null) {
 				String str = data+" "+hora; 
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); 
@@ -737,6 +745,7 @@ public class LigawebController extends HttpServlet {
 			itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
 		}
 		if(usuarioSessao != null) {
+			itemMenuSelecionado = "pages/meusJogos";
 			if(concordar != null) {
 				if(concordar == true) {
 					Resultado resultado = resultadoDao.findById(res.getId()).get();
