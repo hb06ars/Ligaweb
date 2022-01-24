@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -105,14 +106,14 @@ public class LigawebController extends HttpServlet {
 		tipoMensagem = tipo;
 	}
 	
-	public ModelAndView enviaMsg(ModelAndView modelAndView) {
-		modelAndView.addObject("mensagem", mensagem);
-		modelAndView.addObject("tituloMensagem", tituloMensagem);
-		modelAndView.addObject("tipoMensagem", tipoMensagem);
+	public HttpServletRequest enviaMsg(HttpServletRequest request) {
+		request.setAttribute("mensagem", mensagem);
+		request.setAttribute("tituloMensagem", tituloMensagem);
+		request.setAttribute("tipoMensagem", tipoMensagem);
 		mensagem = null;
 		tituloMensagem = null;
 		tipoMensagem = null;
-		return modelAndView;
+		return request;
 	}
 	
 	
@@ -159,9 +160,9 @@ public class LigawebController extends HttpServlet {
 		hoje = ano+"-"+mes+"-"+dia;
 	}
 	
-	@GetMapping({"/","/index"}) 
-		public ModelAndView index(HttpServletRequest request, HttpServletResponse response, Model model) { 
-		ModelAndView modelAndView = new ModelAndView("index");
+	@RequestMapping(value = {"/","/index"}, method = {RequestMethod.GET})
+		public void index(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException { 
+		HttpSession session = request.getSession();
 		List<Usuario> usuarios = usuarioDao.findAll();
 		List<Perfil> perfis = perfilDao.findAll();
 		hoje();
@@ -286,25 +287,24 @@ public class LigawebController extends HttpServlet {
 		*/
 		
 		
-		
-		
-		
-		
-		model.addAttribute("itemMenuSelecionado", "home");
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", "home");
+		if(session.getAttribute("usuarioSessao") != null) {
+			response.sendRedirect("/home");
+		} else {
+			request.getRequestDispatcher("/WEB-INF/jsp/index.jsp").forward(request, response);
+		}
 	}
 	
-	@GetMapping(value = "/deslogar")
-	public void deslogar(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {  
+	@RequestMapping(value = "/deslogar", method = {RequestMethod.GET})
+	public void deslogar(HttpServletRequest request, HttpServletResponse response) throws IOException {  
 		HttpSession session = request.getSession();
-		String link = "/deslogar";
 		session.invalidate();
 		response.sendRedirect("/");
 	}
 	
 	
 	@RequestMapping(value = "/adm/deletando/{tabela}/{id}", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE}) // Pagina de Alteração de Perfil
-	public ModelAndView deletando(HttpServletRequest request, HttpServletResponse response, Model model,@PathVariable("tabela") String tabela, @PathVariable("id") Integer id) { //Função e alguns valores que recebe...
+	public void deletando(HttpServletRequest request, HttpServletResponse response,@PathVariable("tabela") String tabela, @PathVariable("id") Integer id) throws ServletException, IOException { //Função e alguns valores que recebe...
 		String link = "/deslogar";
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
@@ -317,7 +317,7 @@ public class LigawebController extends HttpServlet {
 				itemMenuSelecionado = (String) session.getAttribute("itemMenuSelecionado");
 			}
 		if(usuarioSessao != null && usuarioSessao.getPerfil().getAdmin()) {
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 			link = "/pages/"+tabela;
 			if(tabela.equals("token")) {
 				atualizarPagina = "/token";
@@ -326,9 +326,9 @@ public class LigawebController extends HttpServlet {
 					usuarioDao.delete(objeto);
 				usuarioDao.flush();
 				List<Usuario> tokens = usuarioDao.buscaTokens();
-				model.addAttribute("atualizarPagina", atualizarPagina);
-				model.addAttribute("tokens", tokens);
-				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				request.setAttribute("atualizarPagina", atualizarPagina);
+				request.setAttribute("tokens", tokens);
+				request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Token", "Deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("meusJogos")) {
@@ -338,9 +338,9 @@ public class LigawebController extends HttpServlet {
 					resultadoDao.delete(objeto);
 				}	
 				List<Resultado> resultados = resultadoDao.todosResultados();
-				model.addAttribute("atualizarPagina", atualizarPagina);
-				model.addAttribute("meusJogos", resultados);
-				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				request.setAttribute("atualizarPagina", atualizarPagina);
+				request.setAttribute("meusJogos", resultados);
+				request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Meus Jogos", "Jogo cancelado com sucesso.", "erro");
 			}
 			if(tabela.equals("resultados")) {
@@ -350,9 +350,9 @@ public class LigawebController extends HttpServlet {
 					resultadoDao.deleteById(id);
 				resultadoDao.flush();
 				List<Resultado> resultados = resultadoDao.todosResultados();
-				model.addAttribute("atualizarPagina", atualizarPagina);
-				model.addAttribute("resultados", resultados);
-				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				request.setAttribute("atualizarPagina", atualizarPagina);
+				request.setAttribute("resultados", resultados);
+				request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Resultados", "Jogo deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("excluirUsuario")) {
@@ -374,9 +374,9 @@ public class LigawebController extends HttpServlet {
 					usuarioDao.flush();
 				}
 				List<Usuario> adversario = usuarioDao.jogadores();
-				model.addAttribute("adversario", adversario);
-				model.addAttribute("atualizarPagina", atualizarPagina);
-				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				request.setAttribute("adversario", adversario);
+				request.setAttribute("atualizarPagina", atualizarPagina);
+				request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Jogador", "Jogador deletado com sucesso.", "erro");
 			}
 			if(tabela.equals("classificacao")) {
@@ -397,22 +397,22 @@ public class LigawebController extends HttpServlet {
 					}
 				}
 				List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
-				model.addAttribute("classificacao", classificacao);
-				model.addAttribute("atualizarPagina", atualizarPagina);
-				model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
+				request.setAttribute("classificacao", classificacao);
+				request.setAttribute("atualizarPagina", atualizarPagina);
+				request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
 				registraMsg("Jogos", "Jogos deletados com sucesso.", "erro");
 			}
 			
 		}
-		ModelAndView modelAndView = new ModelAndView(link);
-		enviaMsg(modelAndView);
-		return modelAndView; 
+		
+		enviaMsg(request);
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 
 	
 	
 	@RequestMapping(value = "/criar", method = {RequestMethod.POST,RequestMethod.GET})
-	public ModelAndView criar(HttpServletRequest request, HttpServletResponse response, Model model, Usuario usuario, String codigoAcesso, String confirmaSenha) {  
+	public void criar(HttpServletRequest request, HttpServletResponse response, Usuario usuario, String codigoAcesso, String confirmaSenha) throws ServletException, IOException {  
 		String link = "/criar";
 		String erro="";
 		String msg="";
@@ -443,38 +443,38 @@ public class LigawebController extends HttpServlet {
 									msg = "Usuário "+usuario.getLogin()+" cadastrado com sucesso!";
 								} else {
 									erro = "Código de acesso inválido!";
-									model.addAttribute("erro", erro);
+									request.setAttribute("erro", erro);
 								}
-								model.addAttribute("msg", msg);
+								request.setAttribute("msg", msg);
 							} else {
 								erro = "Login já existe.";
-								model.addAttribute("erro", erro);
+								request.setAttribute("erro", erro);
 							}
 						} else {
 							erro = "Login inválido.";
-							model.addAttribute("erro", erro);
+							request.setAttribute("erro", erro);
 						}
 					}
 				} else {
 					erro = "Senha não confere com a confirmação";
-					model.addAttribute("erro", erro);
+					request.setAttribute("erro", erro);
 				}
 			}
 		}	
-		ModelAndView modelAndView = new ModelAndView(link); 
-		return modelAndView; 
+		 
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/home", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView logar(HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "usuarioVal", defaultValue = "", required=false ) String variavelUsuario, @RequestParam(value = "senhaVal", defaultValue = "", required=false ) String variavelSenha) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void logar(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "usuarioVal", defaultValue = "", required=false ) String variavelUsuario, @RequestParam(value = "senhaVal", defaultValue = "", required=false ) String variavelSenha) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		HttpSession session = request.getSession();
 		String itemMenuSelecionado = "";
 		String link = "pages/deslogar";
 		Usuario usu = usuarioDao.fazerLogin(variavelUsuario, variavelSenha);
 		if(usu != null) {
 			itemMenuSelecionado = "home";
-			model.addAttribute("usuarioSessao", usu);
+			request.setAttribute("usuarioSessao", usu);
 			link = "pages/home";
 			session.setAttribute("usuarioSessao", usu);
 		} else {
@@ -486,14 +486,14 @@ public class LigawebController extends HttpServlet {
 			usu = (Usuario) session.getAttribute("usuarioSessao");
 		}
 		
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/senha", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView senha(HttpServletRequest request, HttpServletResponse response, Model model, String confirmaSenha, String senhaAtual, String novaSenha, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void senha(HttpServletRequest request, HttpServletResponse response, String confirmaSenha, String senhaAtual, String novaSenha, Usuario usuario) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -521,18 +521,18 @@ public class LigawebController extends HttpServlet {
 					}
 				}
 			}
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/senha";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		enviaMsg(modelAndView);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		enviaMsg(request);
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/disponibilidade", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView disponibilidade(HttpServletRequest request, HttpServletResponse response, Model model, String mensagem, String data, Boolean disponivel) throws ParseException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void disponibilidade(HttpServletRequest request, HttpServletResponse response, String mensagem, String data, Boolean disponivel) throws ParseException, ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -560,19 +560,19 @@ public class LigawebController extends HttpServlet {
 				if(mensagem != null)
 					usuarioSessao.setMsg(mensagem);
 				usuarioDao.save(usuarioSessao);
-				model.addAttribute("usuarioSessao", usuarioSessao);
+				request.setAttribute("usuarioSessao", usuarioSessao);
 			}
 		}
 		String link = "pages/disponibilidade";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		enviaMsg(modelAndView);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		enviaMsg(request);
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/token", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView token(HttpServletRequest request, HttpServletResponse response, Model model, Integer criarToken, Usuario usuario) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void token(HttpServletRequest request, HttpServletResponse response, Integer criarToken, Usuario usuario) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -595,18 +595,18 @@ public class LigawebController extends HttpServlet {
 				}
 			}
 			List<Usuario> tokens = usuarioDao.buscaTokens();
-			model.addAttribute("tokens", tokens);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("tokens", tokens);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/token";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/resultados", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView resultados(HttpServletRequest request, HttpServletResponse response, Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void resultados(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -620,17 +620,17 @@ public class LigawebController extends HttpServlet {
 		if(usuarioSessao != null) {
 			itemMenuSelecionado = "pages/resultados";
 			List<Resultado> resultados = resultadoDao.todosResultados();
-			model.addAttribute("resultados", resultados);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("resultados", resultados);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/resultados";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	@RequestMapping(value = "/classificacao", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView classificacao(HttpServletRequest request, HttpServletResponse response, Model model) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void classificacao(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -641,19 +641,19 @@ public class LigawebController extends HttpServlet {
 		if(usuarioSessao != null) {
 			itemMenuSelecionado = "pages/classificacao";
 			List<Classificacao> classificacao = classificacaoDao.todaClassificacao();
-			model.addAttribute("classificacao", "classificacao");
-			model.addAttribute("classificacao", classificacao);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("classificacao", "classificacao");
+			request.setAttribute("classificacao", classificacao);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/classificacao";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/adversario", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView adversario(HttpServletRequest request, HttpServletResponse response, Model model, String id_adv, String data, String hora) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void adversario(HttpServletRequest request, HttpServletResponse response, String id_adv, String data, String hora) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -695,20 +695,20 @@ public class LigawebController extends HttpServlet {
 			}
 			
 			List<Usuario> adversario = usuarioDao.jogadores();
-			model.addAttribute("adversario", adversario);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("adversario", adversario);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/adversario";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		enviaMsg(modelAndView);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		enviaMsg(request);
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	
 	@RequestMapping(value = "/meusJogos", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView meusJogos(HttpServletRequest request, HttpServletResponse response, Model model, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void meusJogos(HttpServletRequest request, HttpServletResponse response, Boolean concordar, Resultado res, Integer placar_jogador1, Integer placar_jogador2) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		
 		/*
 		// Excluir ----------------
@@ -846,19 +846,19 @@ public class LigawebController extends HttpServlet {
 			
 			List<Resultado> resultados = resultadoDao.meusJogos(usuarioSessao.getId());
 			LocalDateTime now = LocalDateTime.now(); 
-			model.addAttribute("now", now);
-			model.addAttribute("meusJogos", resultados);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("now", now);
+			request.setAttribute("meusJogos", resultados);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/meusJogos";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/mata-mata", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView mataMata(HttpServletRequest request, HttpServletResponse response, Model model, MataMata mataMata, String remove, Integer novoTorneio) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void mataMata(HttpServletRequest request, HttpServletResponse response, MataMata mataMata, String remove, Integer novoTorneio) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -908,20 +908,20 @@ public class LigawebController extends HttpServlet {
 				}
 			}
 			List<MataMata> preenchidos = mataMataDao.preenchidos();
-			model.addAttribute("preenchidos", preenchidos);
+			request.setAttribute("preenchidos", preenchidos);
 			List<MataMata> mataMataTimes = mataMataDao.todos();
-			model.addAttribute("mataMata", mataMataTimes);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("mataMata", mataMataTimes);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 		}
 		String link = "pages/mataMata";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 	
 	
 	@RequestMapping(value = "/iniciarMataMata", method = {RequestMethod.POST,RequestMethod.GET}) // Link do submit do form e o method POST que botou la
-	public ModelAndView iniciarMataMata(HttpServletRequest request, HttpServletResponse response, Model model, MataMata mataMata, String remove, String idDisputa, String timeVencedor, String escudoVencedor, String timePerdedor, String escudoPerdedor) { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
+	public void iniciarMataMata(HttpServletRequest request, HttpServletResponse response, MataMata mataMata, String remove, String idDisputa, String timeVencedor, String escudoVencedor, String timePerdedor, String escudoPerdedor) throws ServletException, IOException { // model é usado para mandar , e variavelNome está recebendo o name="nome" do submit feito na pagina principal 
 		String atualizarPagina = "";
 		String itemMenuSelecionado = "";
 		HttpSession session = request.getSession();
@@ -1127,7 +1127,7 @@ public class LigawebController extends HttpServlet {
 					
 					if(times.size() == 1 ) { // Final
 						MataMata campeao = mataMataDao.findAll().get(0);
-						model.addAttribute("campeao", campeao);
+						request.setAttribute("campeao", campeao);
 					}
 					
 					
@@ -1141,7 +1141,7 @@ public class LigawebController extends HttpServlet {
 					mt.setVencedor(false);
 					mataMataDao.save(mt);
 					atualizarPagina = "iniciarMataMata";
-					model.addAttribute("atualizarPagina", atualizarPagina);
+					request.setAttribute("atualizarPagina", atualizarPagina);
 				}
 				
 			
@@ -1150,27 +1150,27 @@ public class LigawebController extends HttpServlet {
 			
 			
 			List<MataMata> vencedores = mataMataDao.vencedores();
-			model.addAttribute("vencedores", vencedores);
+			request.setAttribute("vencedores", vencedores);
 			List<Oitavas> oitavas = oitavasDao.findAll();
-			model.addAttribute("oitavas", oitavas);
+			request.setAttribute("oitavas", oitavas);
 			List<Quartas> quartas = quartasDao.findAll();
-			model.addAttribute("quartas", quartas);
+			request.setAttribute("quartas", quartas);
 			List<SemiFinal> semiFinal = semiFinalDao.findAll();
-			model.addAttribute("semiFinal", semiFinal);
+			request.setAttribute("semiFinal", semiFinal);
 			List<Finais> finais = finaisDao.findAll();
-			model.addAttribute("finais", finais);
+			request.setAttribute("finais", finais);
 			
 			List<MataMata> mataMataTimes = mataMataDao.todos();
-			model.addAttribute("mataMata", mataMataTimes);
-			model.addAttribute("usuarioSessao", usuarioSessao);
+			request.setAttribute("mataMata", mataMataTimes);
+			request.setAttribute("usuarioSessao", usuarioSessao);
 			List<MataMata> preenchidos = mataMataDao.preenchidos();
-			model.addAttribute("preenchidos", preenchidos);
+			request.setAttribute("preenchidos", preenchidos);
 		}
 		
 		String link = "pages/iniciarMataMata";
-		model.addAttribute("itemMenuSelecionado", itemMenuSelecionado);
-		ModelAndView modelAndView = new ModelAndView(link);
-		return modelAndView; 
+		request.setAttribute("itemMenuSelecionado", itemMenuSelecionado);
+		
+		request.getRequestDispatcher("/WEB-INF/jsp/"+link+".jsp").forward(request, response);
 	}
 
 }
